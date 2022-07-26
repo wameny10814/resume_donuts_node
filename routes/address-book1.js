@@ -10,7 +10,7 @@ const router = express.Router(); // 建立 router 物件
 
 const getListHandler = async (req, res) => {
     let output = {
-        perPage: 10,
+        perPage: 2,
         page: 1,
         totalRows: 0,
         totalPages: 0,
@@ -155,9 +155,25 @@ router.get("/", async (req, res) => {
 
 
 });
-router.get("/api", async (req, res) => {
+router.get("/apiiii", async (req, res) => {
     const output = await getListHandler(req, res);
+    output.payload = res.locals.payload;
     res.json(output);
 });
+// 有 token 才給過
+router.get('/api-auth', async (req, res)=>{
+    let output = {
+        success: false,
+        error: ''
+    };
 
+    if(res.locals.loginUser && res.locals.loginUser.account){
+        output = {...(await getListHandler(req, res)), success: true};
+
+    } else {
+        output.error = '沒有授權';
+    }
+    output.loginUser = res.locals.loginUser;
+    res.json(output);
+});
 module.exports = router;

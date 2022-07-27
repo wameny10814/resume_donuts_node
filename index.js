@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const multer = require("multer");
 
+const yuupload = require(__dirname + "/modules/yu-upload-images");
 const upload = require(__dirname + "/modules/upload-images");
 const session = require("express-session");
 const moment = require("moment-timezone");
@@ -48,20 +49,26 @@ app.use(
 // const bodyParser = express.urlencoded({extended: false});
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use((req, res, next) => {
+//yuchen 登入----------------------------------------------------------
+app.use((req, res, next)=>{
+    // res.locals.shinder = '哈囉';
+
+    // template helper functions
     res.locals.toDateString = toDateString;
     res.locals.toDatetimeString = toDatetimeString;
+    res.locals.session = req.session;
 
-    res.locals.session = req.session; //存入locals.session 在ejs可以直接用 req.session這個名字不用加locals
 
-    const auth = req.get("Authorization");
-    // res.locals.payload = null;
-    res.locals.loginUser = null;
-    if (auth && auth.indexOf("Bearer ") === 0) {
-        const token = auth.slice(7);
-        // res.locals.payload = jwt.verify(token, process.env.JWT_SECRET);
-        res.locals.loginUser = jwt.verify(token, process.env.JWT_SECRET);
-    }
+    //解密寫在middle ware 才可以全部頁面都拿到token
+    const auth = req.get('Authorization');
+    res.locals.payload = null;
+    if(auth && auth.indexOf('Bearer ')===0){
+    const token = auth.slice(7);
+    //jwt判定完成存進locals.payload 裡面
+    //2022-07-20 15 36 28 如果路由需要確認有沒有登入才做的話
+    //jwt 每次request 都需要給token
+    res.locals.payload = jwt.verify(token, process.env.JWT_SECRET);
+        }
 
     next();
 });
@@ -76,8 +83,8 @@ app.post("/try-post", (req, res) => {
     res.json(req.body);
 });
 
-
-app.post("/try-upload", upload.single("avatar"), (req, res) => {
+//yuchen 大頭貼上傳------------------------------------------
+app.post("/yu-upload", yuupload.single("avatar"), (req, res) => {
     res.json(req.file);
 });
 
@@ -92,19 +99,19 @@ app.get("/try-json", (req, res) => {
     res.render("try-json");
 });
 
-const adminsRouter = require(__dirname + "/routes/admins");
+// const adminsRouter = require(__dirname + "/routes/admins");
 // prefix 前綴路徑
-app.use("/admins", adminsRouter);
-app.use(adminsRouter);
+// app.use("/admins", adminsRouter);
+// app.use(adminsRouter);
 
-app.get("/try-session", (req, res) => {
-    req.session.my_var = req.session.my_var || 0;
-    req.session.my_var++;
-    res.json({
-        my_var: req.session.my_var,
-        session: req.session,
-    });
-});
+// app.get("/try-session", (req, res) => {
+//     req.session.my_var = req.session.my_var || 0;
+//     req.session.my_var++;
+//     res.json({
+//         my_var: req.session.my_var,
+//         session: req.session,
+//     });
+// });
 
 // address-book
 const addressbook = require(__dirname + "/routes/address-book1");
@@ -113,92 +120,51 @@ app.use("/address-book", addressbook);
 
 
 // 登入login
-app.route("/login")
-    .get(async (req, res) => {
-        res.render("login");
+
+
+//yuchen 登入-----------------------------------------
+app.route('/login-jwt')
+    .get(async (req, res)=>{
+        res.render('login-jwt');
     })
-    .post(async (req, res) => {
+    .post(async (req, res)=>{
         const output = {
             success: false,
-            error: "",
-            code: 0,
-        };
-        const sql = "SELECT * FROM admins WHERE account=?";
-        const [r1] = await db.query(sql, [req.body.account]);
-
-        if (!r1.length) {
-            // 帳號錯誤
-            output.code = 401;
-            output.error = "帳密錯誤";
-            return res.json(output);
-        }
-        //const row = r1[0];
-
-        output.success = await bcrypt.compare(
-            req.body.password,
-            r1[0].pass_hash
-        );
-        console.log(await bcrypt.compare(req.body.password, r1[0].pass_hash));
-        if (!output.success) {
-            // 密碼錯誤
-            output.code = 402;
-            output.error = "帳密錯誤";
-        } else {
-            req.session.admin = {
-                sid: r1[0].sid,
-                account: r1[0].account,
-            };
-        }
-
-        res.json(output);
-    });
-
-//login jwt
-app.route("/login-jwt")
-    .get(async (req, res) => {
-        res.render("login-jwt");
-    })
-    .post(async (req, res) => {
-        const output = {
-            success: false,
-            error: "",
+            error: '',
             code: 0,
             data: {},
         };
-        const sql = "SELECT * FROM admins WHERE account=?";
+        //用帳號撈會員資料
+        const sql = "SELECT * FROM admin WHERE account=?";
         const [r1] = await db.query(sql, [req.body.account]);
 
-        if (!r1.length) {
+        if(! r1.length){
             // 帳號錯誤
             output.code = 401;
-            output.error = "帳密錯誤";
-            return res.json(output);
+            output.error = '帳密錯誤'
+            return res.json(output)
         }
         //const row = r1[0];
-
-        output.success = await bcrypt.compare(
-            req.body.password,
-            r1[0].pass_hash
-        );
-        if (!output.success) {
+        //密碼對比
+        output.success = await bcrypt.compare(req.body.password, r1[0].pass_hash);
+        if(! output.success){
             // 密碼錯誤
             output.code = 402;
-            output.error = "帳密錯誤";
+            output.error = '帳密錯誤'
         } else {
             // 成功登入
-            const token = jwt.sign(
-                {
-                    sid: r1[0].sid,
-                    account: r1[0].account,
-                },
-                process.env.JWT_SECRET
-            );
+            //登入成功生成token
+            const token = jwt.sign({
+                sid: r1[0].sid,
+                account: r1[0].account,
+            }, process.env.JWT_SECRET);
+
 
             output.data = {
-                sid: r1[0].sid,
                 token,
                 account: r1[0].account,
             };
+
         }
 
         res.json(output);
@@ -217,7 +183,7 @@ app.get("/logout", (req, res) => {
 app.use(express.static("public"));
 app.use("/bootstrap", express.static("node_modules/bootstrap/dist"));
 app.use("/joi", express.static("node_modules/joi/dist"));
-// ------- 404 -----------
+// ------- 404 ------------------------------------
 app.use((req, res) => {
     res.send(`<h2>找不到頁面 404</h2>`);
 });

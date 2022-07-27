@@ -62,7 +62,7 @@
 
         $photos.addEventListener('change', function(event){
             const fd = new FormData(document.form1);
-            fetch('/try-uploads', {
+            fetch('/yu-upload', {
                 method: 'POST',
                 body: fd,
             })

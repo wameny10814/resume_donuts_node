@@ -2,7 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const multer = require("multer");
 
+//upload要改名字
 const upload = require(__dirname + "/modules/upload-images");
+
+
 const session = require("express-session");
 const moment = require("moment-timezone");
 const axios = require("axios");
@@ -92,10 +95,12 @@ app.get("/try-json", (req, res) => {
     res.render("try-json");
 });
 
-const adminsRouter = require(__dirname + "/routes/admins");
-// prefix 前綴路徑
-app.use("/admins", adminsRouter);
-app.use(adminsRouter);
+
+//因先把admin刪掉so這先段跑不了
+// const adminsRouter = require(__dirname + "/routes/admins");
+// // prefix 前綴路徑
+// app.use("/admins", adminsRouter);
+// app.use(adminsRouter);
 
 app.get("/try-session", (req, res) => {
     req.session.my_var = req.session.my_var || 0;

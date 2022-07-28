@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const multer = require("multer");
-
+//yuchen 大頭貼上傳---------------------------------------------
 const yuupload = require(__dirname + "/modules/yu-upload-images");
 const willowupload = require(__dirname + "/modules/upload-images");
 //upload要改名字
@@ -53,7 +53,11 @@ app.use(
 // const bodyParser = express.urlencoded({extended: false});
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
 //yuchen 登入----------------------------------------------------------
+app.get('/',function (req,res){
+    res.send('hellw');
+})
 app.use((req, res, next)=>{
     // res.locals.shinder = '哈囉';
 
@@ -103,6 +107,8 @@ app.get("/try-json", (req, res) => {
     res.render("try-json");
 });
 
+// const adminsRouter = require(__dirname + "/routes/admins");
+// prefix 前綴路徑
 
 //因先把admin刪掉so這先段跑不了
 // const adminsRouter = require(__dirname + "/routes/admins");
@@ -125,7 +131,11 @@ const addressbook = require(__dirname + "/routes/address-book1");
 app.use("/address-book", addressbook);
 
 
-// 登入login
+//yuchen router--------------------------------------------------
+const memberRouter = require(__dirname + "/routes/member");
+app.use("/member", memberRouter);
+
+
 
 
 //yuchen 登入-----------------------------------------

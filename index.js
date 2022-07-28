@@ -3,6 +3,7 @@ const express = require("express");
 const multer = require("multer");
 
 const yuupload = require(__dirname + "/modules/yu-upload-images");
+const willowupload = require(__dirname + "/modules/upload-images");
 //upload要改名字
 const upload = require(__dirname + "/modules/upload-images");
 
@@ -102,15 +103,10 @@ app.get("/try-json", (req, res) => {
     res.render("try-json");
 });
 
-<<<<<<< HEAD
-// const adminsRouter = require(__dirname + "/routes/admins");
-// prefix 前綴路徑
-=======
 
 //因先把admin刪掉so這先段跑不了
 // const adminsRouter = require(__dirname + "/routes/admins");
 // // prefix 前綴路徑
->>>>>>> 4ffd2bc279ed5c9b883ba654342f1884215e04bf
 // app.use("/admins", adminsRouter);
 // app.use(adminsRouter);
 
@@ -145,7 +141,7 @@ app.route('/login-jwt')
             data: {},
         };
         //用帳號撈會員資料
-        const sql = "SELECT * FROM admin WHERE account=?";
+        const sql = "SELECT * FROM admins WHERE account=?";
         const [r1] = await db.query(sql, [req.body.account]);
 
         if(! r1.length){

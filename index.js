@@ -3,6 +3,7 @@ const express = require("express");
 const multer = require("multer");
 //yuchen 大頭貼上傳---------------------------------------------
 const yuupload = require(__dirname + "/modules/yu-upload-images");
+const willowupload = require(__dirname + "/modules/upload-images");
 //upload要改名字
 const upload = require(__dirname + "/modules/upload-images");
 
@@ -143,7 +144,11 @@ app.route("/login-jwt")
             data: {},
         };
         //用帳號撈會員資料
+<<<<<<< HEAD
         const sql = "SELECT * FROM member WHERE account=?";
+=======
+        const sql = "SELECT * FROM admins WHERE account=?";
+>>>>>>> 54f33a3b23986778f64ff3444784a62d43189880
         const [r1] = await db.query(sql, [req.body.account]);
 
         if (!r1.length) {

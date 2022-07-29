@@ -42,10 +42,19 @@ router.post("/add", async (req, res) => {
     res.json(result);
 });
 
-router.get("/userdata", async (req, res) => {
+router.get("/memberdata", async (req, res) => {
     const sql = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
     // const sql2 =SELECT `sid`, `account`, `pass_hash`, `name`, `birthday`, `email`, `mobile`, `address`, `avatar`, `level`, `creat_at` FROM `member` WHERE sid =1;
     const [result] = await db.query(sql, [req.body]);
+
+    res.json(result);
+});
+
+router.post("/memberupdate", async (req, res) => {
+    const sql = `UPDATE member SET birthday=?,email=?,mobile=?,address=? WHERE sid=${res.locals.payload.sid}`;
+    console.log("sid", res.locals.payload.sid);
+    const { birthday, email, mobile, address } = req.body;
+    const [result] = await db.query(sql, [birthday, email, mobile, address]);
 
     res.json(result);
 });

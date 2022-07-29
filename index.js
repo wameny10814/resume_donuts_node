@@ -73,6 +73,7 @@ app.use((req, res, next) => {
         //2022-07-20 15 36 28 如果路由需要確認有沒有登入才做的話
         //jwt 每次request 都需要給token
         res.locals.payload = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('payload',res.locals.payload)
     }
 
     next();
@@ -144,11 +145,7 @@ app.route("/login-jwt")
             data: {},
         };
         //用帳號撈會員資料
-<<<<<<< HEAD
         const sql = "SELECT * FROM member WHERE account=?";
-=======
-        const sql = "SELECT * FROM admins WHERE account=?";
->>>>>>> 54f33a3b23986778f64ff3444784a62d43189880
         const [r1] = await db.query(sql, [req.body.account]);
 
         if (!r1.length) {

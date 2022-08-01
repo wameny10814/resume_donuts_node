@@ -3,7 +3,7 @@ const express = require("express");
 const multer = require("multer");
 //yuchen 大頭貼上傳---------------------------------------------
 const yuupload = require(__dirname + "/modules/yu-upload-images");
-const willowupload = require(__dirname + "/modules/upload-images");
+const willowupload = require(__dirname + "/modules/willow-upload-images");
 //upload要改名字
 const upload = require(__dirname + "/modules/upload-images");
 
@@ -54,7 +54,7 @@ app.use(express.json());
 
 //yuchen 登入----------------------------------------------------------
 app.get("/", function (req, res) {
-    res.send("hellw");
+    res.send("hello");
 });
 app.use((req, res, next) => {
     // res.locals.shinder = '哈囉';
@@ -88,6 +88,12 @@ app.get("/try-qs", (req, res) => {
 app.post("/try-post", (req, res) => {
     res.json(req.body);
 });
+
+//willow uploadimg
+app.post("/willow-upload", willowupload.single("avatar"), (req, res) => {
+    res.json(req.file);
+});
+
 
 //yuchen 大頭貼上傳------------------------------------------
 // app.post("/yu-upload", yuupload.single("avatar"), (req, res) => {
@@ -134,6 +140,10 @@ app.get("/try-json", (req, res) => {
 const addressbook = require(__dirname + "/routes/address-book1");
 // prefix 前綴路徑
 app.use("/address-book", addressbook);
+
+//willow router
+const willownewsR = require(__dirname + "/routes/willownews");
+app.use("/willownews", willownewsR);
 
 //yuchen router--------------------------------------------------
 const memberRouter = require(__dirname + "/routes/member");

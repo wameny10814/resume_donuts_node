@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router(); // 建立 router 物件
 const db = require(__dirname + "/../modules/mysql-connect");
+const yuupload = require(__dirname + "/../modules/yu-upload-images");
 
 // router.get('/add', async (req, res)=>{
 //        res.render('address-book/add');
@@ -44,19 +45,37 @@ router.post("/add", async (req, res) => {
 
 router.get("/memberdata", async (req, res) => {
     const sql = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
-    // const sql2 =SELECT `sid`, `account`, `pass_hash`, `name`, `birthday`, `email`, `mobile`, `address`, `avatar`, `level`, `creat_at` FROM `member` WHERE sid =1;
+
     const [result] = await db.query(sql, [req.body]);
 
     res.json(result);
 });
 
 router.post("/memberupdate", async (req, res) => {
-    const sql = `UPDATE member SET birthday=?,email=?,mobile=?,address=? WHERE sid=${res.locals.payload.sid}`;
+    const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=? WHERE sid=${res.locals.payload.sid}`;
     console.log("sid", res.locals.payload.sid);
-    const { birthday, email, mobile, address } = req.body;
-    const [result] = await db.query(sql, [birthday, email, mobile, address]);
+    console.log(req.body);
+    const { account, birthday, email, mobile, address, level } = req.body;
+    const [result] = await db.query(sql, [
+        account,
+        birthday,
+        email,
+        mobile,
+        address,
+        level,
+    ]);
 
     res.json(result);
+});
+
+router.post("/yuupload", yuupload.single("avatar"), async(req, res) => {
+    const sql =`UPDATE member SET avatar =? WHERE member.sid =${res.locals.payload.sid}`;
+    console.log(res.locals.payload.sid);
+    db.query(sql, [req.file.filename], function (err, result) {
+        console.log("inserted 88 data");
+    });
+
+    res.json(req.file);
 });
 
 module.exports = router;

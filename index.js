@@ -73,7 +73,7 @@ app.use((req, res, next) => {
         //2022-07-20 15 36 28 如果路由需要確認有沒有登入才做的話
         //jwt 每次request 都需要給token
         res.locals.payload = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('payload',res.locals.payload)
+        console.log("payload", res.locals.payload);
     }
 
     next();
@@ -90,9 +90,16 @@ app.post("/try-post", (req, res) => {
 });
 
 //yuchen 大頭貼上傳------------------------------------------
-app.post("/yu-upload", yuupload.single("avatar"), (req, res) => {
-    res.json(req.file);
-});
+// app.post("/yu-upload", yuupload.single("avatar"), (req, res) => {
+//     // const sql2 ="INSERT INTO `member`(`avatar`) VALUES (?) WHERE sid=(10)";
+//     const sql ="UPDATE `member` SET `avatar` =? WHERE `member`.`sid` = 11";
+//     console.log(res.locals.payload.sid);
+//     db.query(sql, [req.file.filename], function (err, result) {
+//         console.log("inserted 88 data");
+//     });
+
+//     res.json(req.file);
+// });
 
 app.post("/try-uploads", upload.array("photos"), (req, res) => {
     res.json(req.files);

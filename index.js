@@ -23,6 +23,7 @@ const jwt = require("jsonwebtoken");
 const app = express();
 
 app.set("case sensitive routing", true);
+ 
 
 // Top-level middlewares
 const corsOptions = {
@@ -90,10 +91,10 @@ app.post("/try-post", (req, res) => {
 });
 
 //willow uploadimg
-app.post("/willow-upload", willowupload.single("avatar"), (req, res) => {
+app.post("/willow-upload", willowupload.single("newsimg"), (req, res) => {
     res.json(req.file);
 });
-
+app.use("/willowimgs",express.static(__dirname + "/public/willowimgs"))
 
 //yuchen 大頭貼上傳------------------------------------------
 app.post("/yu-upload", yuupload.single("avatar"), (req, res) => {
@@ -137,6 +138,8 @@ app.use("/address-book", addressbook);
 //willow router
 const willownewsR = require(__dirname + "/routes/willownews");
 app.use("/willownews", willownewsR);
+// const willownimgshow = require(__dirname + "/public/willowimgs");
+// app.use("/willowshowimg", willownimgshow);
 
 //yuchen router--------------------------------------------------
 const memberRouter = require(__dirname + "/routes/member");

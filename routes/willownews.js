@@ -14,16 +14,21 @@ router.get("/", async (req, res) => {
 
 // upload.none()用中介轉乘 url inclding
 router.post("/newsadd", async (req, res) => {
+    // (`newsid`, `userid`, `newstitle`, `words`, `newsimg`, `newsstyle`, `news_at`)
+    const { userid, newstitle, words, newsimg, newsstyle } = req.body;
+   console.log( req.body)
     const sql =
-        "INSERT INTO `willownews`(`userid`, `words`, `newsimg`, `news_at`) VALUES (?,?,?,NOW())";
-    const { userid, words, newsimg } = req.body;
+        "INSERT INTO `willownews`(`userid`,`newstitle`,`words`,`newsimg`,`newsstyle`,`news_at`) VALUES (?,?,?,?,?,NOW())";
 
-    const [result] = await db.query(sql, [ userid, words, newsimg]);
+    const [result] = await db.query(sql, [
+        userid,
+        newstitle,
+        words,
+        newsimg,
+        newsstyle,
+    ]);
 
     res.json(result);
 });
-
-
-
 
 module.exports = router;

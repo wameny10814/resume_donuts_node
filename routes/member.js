@@ -30,7 +30,7 @@ router.post("/add", async (req, res) => {
 
     // console.log( schema.validate(req.body, {abortEarly: false}) );
     const sql =
-        "INSERT INTO `member`(`account`, `pass_hash`, `birthday`, `email`, `level`, `creat_at`) VALUES (?,?,?,?,1,NOW())";
+        "INSERT INTO `member`(`account`, `pass_hash`, `birthday`, `email`, `level`, `creat_at`) VALUES (?,?,?,?,0,NOW())";
     const { account, pass_hash, birthday, email } = req.body;
     // const saltRounds = 10;
     // const myPlaintextPassword = "s0//P4$$w0rD";
@@ -52,24 +52,23 @@ router.get("/memberdata", async (req, res) => {
 });
 
 router.post("/memberupdate", async (req, res) => {
-    const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=? WHERE sid=${res.locals.payload.sid}`;
+    const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=2 WHERE sid=${res.locals.payload.sid}`;
     console.log("sid", res.locals.payload.sid);
     console.log(req.body);
-    const { account, birthday, email, mobile, address, level } = req.body;
+    const { account, birthday, email, mobile, address } = req.body;
     const [result] = await db.query(sql, [
         account,
         birthday,
         email,
         mobile,
         address,
-        level,
     ]);
 
     res.json(result);
 });
 
 router.post("/yuupload", yuupload.single("avatar"), async(req, res) => {
-    const sql =`UPDATE member SET avatar =? WHERE member.sid =${res.locals.payload.sid}`;
+    const sql =`UPDATE member SET avatar =?, level=1 WHERE member.sid =${res.locals.payload.sid}`;
     console.log(res.locals.payload.sid);
     db.query(sql, [req.file.filename], function (err, result) {
         console.log("inserted 88 data");

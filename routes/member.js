@@ -4,11 +4,7 @@ const router = express.Router(); // 建立 router 物件
 const db = require(__dirname + "/../modules/mysql-connect");
 const yuupload = require(__dirname + "/../modules/yu-upload-images");
 
-// router.get('/add', async (req, res)=>{
-//        res.render('address-book/add');
-//     });
-
-//c
+//註冊會員
 router.post("/add", async (req, res) => {
     // if(! req.session.admin){
     //     return res.redirect('/');
@@ -42,7 +38,7 @@ router.post("/add", async (req, res) => {
 
     res.json(result);
 });
-
+//撈取現在資料庫資料
 router.get("/memberdata", async (req, res) => {
     const sql = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
 
@@ -50,31 +46,60 @@ router.get("/memberdata", async (req, res) => {
 
     res.json(result);
 });
-
+//修改會員資料
 router.post("/memberupdate", async (req, res) => {
-    const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=2 WHERE sid=${res.locals.payload.sid}`;
-    console.log("sid", res.locals.payload.sid);
-    console.log(req.body);
-    const { account, birthday, email, mobile, address } = req.body;
-    const [result] = await db.query(sql, [
-        account,
-        birthday,
-        email,
-        mobile,
-        address,
-    ]);
+    //先確認現在會員等級
+    const sqllevelcheck = `SELECT  level FROM member WHERE sid=${res.locals.payload.sid}`;
+    const [resultcheck] = await db.query(sqllevelcheck);
+    if (resultcheck[0].level > 2) {
+        const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=? WHERE sid=${res.locals.payload.sid}`;
+        const { account, birthday, email, mobile, address } = req.body;
+        const [result] = await db.query(sql, [
+            account,
+            birthday,
+            email,
+            mobile,
+            address,
+        ]);
 
-    res.json(result);
+        res.json(result);
+    } else {
+        const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=2 WHERE sid=${res.locals.payload.sid}`;
+        console.log("sid", res.locals.payload.sid);
+        console.log(req.body);
+        const { account, birthday, email, mobile, address } = req.body;
+        const [result] = await db.query(sql, [
+            account,
+            birthday,
+            email,
+            mobile,
+            address,
+        ]);
+
+        res.json(result);
+    }
 });
+//上傳頭貼
+router.post("/yuupload", yuupload.single("avatar"), async (req, res) => {
+    //先確認現在會員等級
+    const sqllevelcheck = `SELECT  level FROM member WHERE sid=${res.locals.payload.sid}`;
+    const [resultcheck] = await db.query(sqllevelcheck);
+    if (resultcheck[0].level > 1) {
+        const sql = `UPDATE member SET avatar =? WHERE member.sid =${res.locals.payload.sid}`;
+        db.query(sql, [req.file.filename], function (err, result) {
+            console.log("inserted 88 data");
+        });
 
-router.post("/yuupload", yuupload.single("avatar"), async(req, res) => {
-    const sql =`UPDATE member SET avatar =?, level=1 WHERE member.sid =${res.locals.payload.sid}`;
-    console.log(res.locals.payload.sid);
-    db.query(sql, [req.file.filename], function (err, result) {
-        console.log("inserted 88 data");
-    });
+        res.json(req.file);
+    } else {
+        const sql = `UPDATE member SET avatar =?, level=1 WHERE member.sid =${res.locals.payload.sid}`;
+        console.log(res.locals.payload.sid);
+        db.query(sql, [req.file.filename], function (err, result) {
+            console.log("inserted 88 data");
+        });
 
-    res.json(req.file);
+        res.json(req.file);
+    }
 });
 
 module.exports = router;

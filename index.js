@@ -54,9 +54,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //yuchen 登入----------------------------------------------------------
-app.get("/", function (req, res) {
-    res.send("hello");
-});
 app.use((req, res, next) => {
     // res.locals.shinder = '哈囉';
 
@@ -96,17 +93,6 @@ app.post("/willow-upload", willowupload.single("newsimg"), (req, res) => {
 });
 app.use("/willowimgs",express.static(__dirname + "/public/willowimgs"))
 
-//yuchen 大頭貼上傳------------------------------------------
-// app.post("/yu-upload", yuupload.single("avatar"), (req, res) => {
-//     // const sql2 ="INSERT INTO `member`(`avatar`) VALUES (?) WHERE sid=(10)";
-//     const sql ="UPDATE `member` SET `avatar` =? WHERE `member`.`sid` = 11";
-//     console.log(res.locals.payload.sid);
-//     db.query(sql, [req.file.filename], function (err, result) {
-//         console.log("inserted 88 data");
-//     });
-
-//     res.json(req.file);
-// });
 
 app.post("/try-uploads", upload.array("photos"), (req, res) => {
     res.json(req.files);

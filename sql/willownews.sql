@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2022-08-01 13:35:11
+-- 產生時間： 2022-08-03 10:06:37
 -- 伺服器版本： 10.4.24-MariaDB
 -- PHP 版本： 7.4.29
 
@@ -30,6 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `willownews` (
   `newsid` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
+  `starttime` date DEFAULT NULL,
+  `finishtime` date DEFAULT NULL,
   `newstitle` varchar(255) DEFAULT NULL,
   `words` varchar(255) DEFAULT NULL,
   `newsimg` varchar(255) DEFAULT NULL,
@@ -41,11 +43,13 @@ CREATE TABLE `willownews` (
 -- 傾印資料表的資料 `willownews`
 --
 
-INSERT INTO `willownews` (`newsid`, `userid`, `newstitle`, `words`, `newsimg`, `newsstyle`, `news_at`) VALUES
-(1, 1, NULL, 'gggg', 'dddd', NULL, '2022-06-09 21:21:39'),
-(2, 1, NULL, 'asdasdasdasd', 'dddddddd', NULL, '2022-08-01 10:42:43'),
-(3, 0, 'rrrrr', 'werewrwerwerewrrwer', 'f8557ed4-cf31-4203-91bf-53631a8fc81a.jpg', 1, '2022-08-01 19:29:43'),
-(4, 0, '新增test1', '安安阿\n', '0c3e3dc5-2fb3-49aa-b421-89d9b199a452.jpg', 1, '2022-08-01 19:30:16');
+INSERT INTO `willownews` (`newsid`, `userid`, `starttime`, `finishtime`, `newstitle`, `words`, `newsimg`, `newsstyle`, `news_at`) VALUES
+(5, 0, NULL, NULL, '劉玉珍', '劉玉珍', '1144d332-d6ac-4e15-951f-9381d61ad4b7.jpg', 1, '2022-08-02 10:58:24'),
+(6, 0, NULL, NULL, 'dsdadad', 'werwrwerwrewrwre', '3c363ff3-1913-43e6-9955-ed9b479ab4a7.jpg', 1, '2022-08-02 15:34:37'),
+(7, 0, NULL, NULL, 'dddddddddddddddddd', '1231231231231231231231231', '3dccc0bd-9358-4220-9b80-563f1cdbbee1.jpg', 1, '2022-08-02 15:38:56'),
+(16, 0, NULL, NULL, '狗狗給', '狗狗給給給給', 'ec496e7b-5a5f-46e2-86fd-152647f5d28b.jpg', 1, '2022-08-02 16:37:06'),
+(17, 0, '2022-08-03', '2022-08-03', 'baby', 'baby', 'e2e2bab2-fbc4-4595-975b-6477b7a11f6e.jpg', 1, '2022-08-03 11:24:47'),
+(18, 0, '2022-08-03', '2022-08-03', '安安123123123', 'DJ4DJ4DJ4庫子 ', '41d1ef1b-366b-46e7-b71f-a6c892b2e292.jpg', 1, '2022-08-03 11:44:05');
 
 --
 -- 已傾印資料表的索引
@@ -65,7 +69,7 @@ ALTER TABLE `willownews`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `willownews`
 --
 ALTER TABLE `willownews`
-  MODIFY `newsid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `newsid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

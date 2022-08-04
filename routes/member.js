@@ -65,8 +65,6 @@ router.post("/memberupdate", async (req, res) => {
         res.json(result);
     } else {
         const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=2 WHERE sid=${res.locals.payload.sid}`;
-        console.log("sid", res.locals.payload.sid);
-        console.log(req.body);
         const { account, birthday, email, mobile, address } = req.body;
         const [result] = await db.query(sql, [
             account,
@@ -99,6 +97,34 @@ router.post("/yuupload", yuupload.single("avatar"), async (req, res) => {
         });
 
         res.json(req.file);
+    }
+});
+
+router.post("/membersdupdate", async (req, res) => {
+    const output = {
+        success: false,
+    };
+    const oldpsd = `SELECT  pass_hash FROM member WHERE sid=${res.locals.payload.sid}`;
+    const [oldpsdfromdb] = await db.query(oldpsd);
+    const { psdOld, psdNew } = req.body;
+    //密碼對比
+    // console.log(oldpsd, oldpsdfromdb[0].pass_hash);
+    output.success = await bcrypt.compare(psdOld, oldpsdfromdb[0].pass_hash);
+    // console.log("output.success", output.success);
+    //對比正確後新密碼寫入db
+    if (output.success === true) {
+        // console.log('1');
+        const sql = `UPDATE member SET pass_hash =? WHERE member.sid =${res.locals.payload.sid}`;
+        var hash = await bcrypt.hash(psdNew, 10);
+        const [querydone] = await db.query(sql, [hash]);
+        const result = {...querydone,success:true};
+        // console.log('result',result);
+        res.json(result);
+    } else {
+        // console.log('2');
+        // console.log('output',output);
+        output.success = false;
+        res.json(output);
     }
 });
 

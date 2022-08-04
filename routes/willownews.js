@@ -7,13 +7,25 @@ const Joi = require("joi");
 const upload = require(__dirname + "/../modules/upload-images");
 
 const router = express.Router(); // 建立 router 物件
-
+// 讀news data
 router.get("/newsdata", async (req, res) => {
-    const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=1`;
+    const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=1 ORDER BY newsid DESC`;
     const [result] = await db.query(sql);
     res.json(result);
 });
-
+// 讀goodprice
+router.get("/goodpricedata", async (req, res) => {
+    const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
+    const [result] = await db.query(sql);
+    res.json(result);
+});
+// 讀goodwriting data
+router.get("/goodwritingdata", async (req, res) => {
+    const sql = `SELECT * FROM goodwriting WHERE 1 ORDER BY goodwritingid DESC`;
+    const [result] = await db.query(sql);
+    res.json(result);
+});
+// delete newsdata
 router.delete("/newsdata", async (req, res) => {
     let output = {
         success: false,
@@ -27,7 +39,32 @@ router.delete("/newsdata", async (req, res) => {
         const sql = `DELETE FROM willownews WHERE newsid=?`;
         const [result] = await db.query(sql, [sid]);
         output.success = true;
-        output.information = "delet ok";
+        output.information = "news delet ok";
+    }
+
+    // console.log(sid)
+
+    //  const sql = `DELETE FROM willownews WHERE 0`;
+    // `SELECT userid,account,password,name FROM willowadminuser WHERE 1`;
+    // const [result] = await db.query(sql, [req.body]);
+    res.json(output);
+});
+
+// delete goodwritingdata
+router.delete("/goodwritingdata", async (req, res) => {
+    let output = {
+        success: false,
+        data: req.query,
+        error: "",
+        information: "",
+    };
+    const { sid } = req.query;
+    if (!!req.query === true) {
+        console.log(sid);
+        const sql = `DELETE FROM goodwriting WHERE goodwritingid=?`;
+        const [result] = await db.query(sql, [sid]);
+        output.success = true;
+        output.information = "good writing delet ok";
     }
 
     // console.log(sid)
@@ -51,12 +88,23 @@ router.get("/newsupdate", async (req, res) => {
     const { sid } = req.query;
     const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsid=?`;
     const [result] = await db.query(sql, [sid]);
-    // res.json(result);
+
     console.log(result);
     res.json(result);
 });
 
-//更新資料
+//讀進入goodupdate畫面的get
+router.get("/goodwritingupdate", async (req, res) => {
+    const { sid } = req.query;
+    console.log(sid);
+    const sql = `SELECT goodwritingid,userid,goodtitle,goodwords,goodimg FROM goodwriting WHERE goodwritingid=?`;
+    const [result] = await db.query(sql, [sid]);
+
+    console.log(result);
+    res.json(result);
+});
+
+//更新newsupdate資料
 router.put("/newsupdate", async (req, res) => {
     let output = {
         success: false,
@@ -78,13 +126,43 @@ router.put("/newsupdate", async (req, res) => {
     ]);
     if (result.affectedRows === 1) {
         output.success = true;
-        output.information = "update ok";
+        output.information = "news update ok";
     } else {
         output.error = "error";
     }
     res.json(output);
 });
 
+//更新goodwritingupdate資料
+router.put("/goodwritingupdate", async (req, res) => {
+    let output = {
+        success: false,
+        data: req.body,
+        error: "",
+        information: "",
+    };
+    const { userid, goodwritingid, goodtitle, goodwords, goodimg } = req.body;
+    console.log(userid, goodwritingid);
+
+    const sql = `UPDATE goodwriting SET userid=?,goodtitle=?,goodwords=?,goodimg=? WHERE  goodwritingid=${goodwritingid}`;
+
+    const [result] = await db.query(sql, [
+        userid,
+        goodtitle,
+        goodwords,
+        goodimg,
+    ]);
+    if (result.affectedRows === 1) {
+        output.success = true;
+        output.information = "good update ok";
+    } else {
+        output.error = "error";
+    }
+    // console.log(output)
+    res.json(output);
+});
+
+// inser news
 router.post("/newsadd", async (req, res) => {
     // (`newsid`, `userid`, `newstitle`, `words`, `newsimg`, `newsstyle`, `news_at`)
     const { userid, newstitle, words, newsimg, newsstyle } = req.body;
@@ -102,6 +180,70 @@ router.post("/newsadd", async (req, res) => {
         const [result] = await db.query(sql, [
             userid,
             newstitle,
+            words,
+            newsimg,
+            newsstyle,
+        ]);
+        output.success = true;
+        output.information = "insert ok";
+    }
+
+    res.json(output);
+});
+// inser good
+router.post("/goodwritingsadd", async (req, res) => {
+    // (`newsid`, `userid`, `newstitle`, `words`, `newsimg`, `newsstyle`, `news_at`)
+    const { userid, goodtitle, goodwords, goodimg } = req.body;
+    console.log(req.body);
+    let output = {
+        success: false,
+        data: req.body,
+        error: "",
+        information: "",
+    };
+    if (!!req.body === true) {
+        const sql =
+            "INSERT INTO `goodwriting`(`userid`,`goodtitle`,`goodwords`,`goodimg`,`good_at`) VALUES (?,?,?,?,NOW())";
+
+        const [result] = await db.query(sql, [
+            userid,
+            goodtitle,
+            goodwords,
+            goodimg,
+        ]);
+        output.success = true;
+        output.information = "insert ok";
+    }
+
+    res.json(output);
+});
+// inser goodprice
+router.post("/goodpriceadd", async (req, res) => {
+    const {
+        userid,
+        newstitle,
+        starttime,
+        finishtime,
+        words,
+        newsimg,
+        newsstyle,
+    } = req.body;
+    console.log(req.body);
+    let output = {
+        success: false,
+        data: req.body,
+        error: "",
+        information: "",
+    };
+    if (!!req.body === true) {
+        const sql =
+            "INSERT INTO `willownews`(`userid`,`newstitle`,`starttime`,`finishtime`,`words`,`newsimg`,`newsstyle`,`news_at`) VALUES (?,?,?,?,?,?,?,NOW())";
+
+        const [result] = await db.query(sql, [
+            userid,
+            newstitle,
+            starttime,
+            finishtime,
             words,
             newsimg,
             newsstyle,

@@ -88,6 +88,7 @@ app.post("/try-post", (req, res) => {
 });
 
 //willow uploadimg
+// "newsimg"名字跟著前端傳過來的一樣
 app.post("/willow-upload", willowupload.single("newsimg"), (req, res) => {
     res.json(req.file);
 });

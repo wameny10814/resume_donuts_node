@@ -1,8 +1,9 @@
 const express = require("express");
 const db = require(__dirname + "/../modules/mysql-connect");
+const moment = require("moment-timezone");
 const { toDateString, toDatetimeString } = require(__dirname +
     "/../modules/date-tools");
-const moment = require("moment-timezone");
+
 const Joi = require("joi");
 const upload = require(__dirname + "/../modules/upload-images");
 
@@ -13,10 +14,12 @@ router.get("/newsdata", async (req, res) => {
     const [result] = await db.query(sql);
     res.json(result);
 });
-// 讀goodprice
+// 讀goodprice Activty
 router.get("/goodpricedata", async (req, res) => {
-    const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
+    const sql = `SELECT newsid,userid,starttime,finishtime,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
     const [result] = await db.query(sql);
+    result.forEach((el) => (el.starttime = toDateString(el.starttime),el.finishtime = toDateString(el.finishtime)));
+    console.log("goodpricedata",result)
     res.json(result);
 });
 // 讀goodwriting data
@@ -33,6 +36,7 @@ router.delete("/newsdata", async (req, res) => {
         error: "",
         information: "",
     };
+    console.log("req.query", req.query);
     const { sid } = req.query;
     if (!!req.query === true) {
         console.log(sid);
@@ -41,12 +45,6 @@ router.delete("/newsdata", async (req, res) => {
         output.success = true;
         output.information = "news delet ok";
     }
-
-    // console.log(sid)
-
-    //  const sql = `DELETE FROM willownews WHERE 0`;
-    // `SELECT userid,account,password,name FROM willowadminuser WHERE 1`;
-    // const [result] = await db.query(sql, [req.body]);
     res.json(output);
 });
 
@@ -66,24 +64,11 @@ router.delete("/goodwritingdata", async (req, res) => {
         output.success = true;
         output.information = "good writing delet ok";
     }
-
-    // console.log(sid)
-
-    //  const sql = `DELETE FROM willownews WHERE 0`;
-    // `SELECT userid,account,password,name FROM willowadminuser WHERE 1`;
-    // const [result] = await db.query(sql, [req.body]);
     res.json(output);
 });
-//  router.get("/memberdata", async (req, res) => {
-//     const sql = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
-
-//     const [result] = await db.query(sql, [req.body]);
-
-//     res.json(result);
-// });
 
 // upload.none()用中介轉乘 url inclding
-//讀進入update畫面的get
+//讀進入newsupdate畫面的get
 router.get("/newsupdate", async (req, res) => {
     const { sid } = req.query;
     const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsid=?`;
@@ -92,7 +77,15 @@ router.get("/newsupdate", async (req, res) => {
     console.log(result);
     res.json(result);
 });
-
+//讀進入goodprice-activty update畫面的get
+router.get("/goodpriceupdate", async (req, res) => {
+    const { sid } = req.query;
+    const sql = `SELECT newsid,userid,starttime,finishtime,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsid=?`;
+    const [result] = await db.query(sql, [sid]);
+    result.forEach((el) => (el.starttime = toDateString(el.starttime),el.finishtime = toDateString(el.finishtime)));
+    console.log("result", result);
+    res.json(result);
+});
 //讀進入goodupdate畫面的get
 router.get("/goodwritingupdate", async (req, res) => {
     const { sid } = req.query;
@@ -101,6 +94,13 @@ router.get("/goodwritingupdate", async (req, res) => {
     const [result] = await db.query(sql, [sid]);
 
     console.log(result);
+    res.json(result);
+});
+
+// test
+router.get("/test", async (req, res) => {
+  const sql = `SELECT sid,test,test2 FROM rtest WHERE 1`;
+  const [result] = await db.query(sql);
     res.json(result);
 });
 
@@ -132,7 +132,36 @@ router.put("/newsupdate", async (req, res) => {
     }
     res.json(output);
 });
+//更新goodprice-activty update資料
+router.put("/goodpriceupdate", async (req, res) => {
+    let output = {
+        success: false,
+        data: req.body,
+        error: "",
+        information: "",
+    };
+    const { userid, newsid,starttime,finishtime, newstitle, words, newsimg, newsstyle } = req.body;
+    console.log("show",userid, newsid);
 
+    const sql = `UPDATE willownews SET userid=?,starttime=?,finishtime=?,newstitle=?,words=?,newsimg=?,newsstyle=? WHERE  newsid=${newsid}`;
+
+    const [result] = await db.query(sql, [
+        userid,
+        starttime,
+        finishtime,
+        newstitle,
+        words,
+        newsimg,
+        newsstyle,
+    ]);
+    if (result.affectedRows === 1) {
+        output.success = true;
+        output.information = "news update ok";
+    } else {
+        output.error = "error";
+    }
+    res.json(output);
+});
 //更新goodwritingupdate資料
 router.put("/goodwritingupdate", async (req, res) => {
     let output = {

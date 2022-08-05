@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const router = express.Router(); // 建立 router 物件
 const db = require(__dirname + "/../modules/mysql-connect");
 const yuupload = require(__dirname + "/../modules/yu-upload-images");
+const { toDateString, toDatetimeString } = require(__dirname +
+    "/../modules/date-tools");
 
 //註冊會員
 router.post("/add", async (req, res) => {
@@ -40,11 +42,12 @@ router.post("/add", async (req, res) => {
 });
 //撈取現在資料庫資料
 router.get("/memberdata", async (req, res) => {
-    const sql = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
+    const loaddata = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
+    const [r2] = await db.query(loaddata);
+    //
+    r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
+    res.json(r2);
 
-    const [result] = await db.query(sql, [req.body]);
-
-    res.json(result);
 });
 //修改會員資料
 router.post("/memberupdate", async (req, res) => {
@@ -61,8 +64,11 @@ router.post("/memberupdate", async (req, res) => {
             mobile,
             address,
         ]);
-
-        res.json(result);
+        const loaddata = `SELECT account, birthday, email, mobile, address FROM member WHERE sid=${res.locals.payload.sid}`;
+        const [r2] = await db.query(loaddata);
+        r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
+        console.log('updatedata',r2);
+        res.json(r2);
     } else {
         const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=2 WHERE sid=${res.locals.payload.sid}`;
         const { account, birthday, email, mobile, address } = req.body;
@@ -73,8 +79,13 @@ router.post("/memberupdate", async (req, res) => {
             mobile,
             address,
         ]);
+        //date-tools 轉日期
+        const loaddata = `SELECT account, birthday, email, mobile, address FROM member WHERE sid=${res.locals.payload.sid}`;
+        const [r2] = await db.query(loaddata);
+        r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
+        console.log('result',r2);
+        res.json(r2);
 
-        res.json(result);
     }
 });
 //上傳頭貼

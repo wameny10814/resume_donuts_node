@@ -12,13 +12,14 @@ const router = express.Router(); // 建立 router 物件
 router.get("/newsdata", async (req, res) => {
     const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=1 ORDER BY newsid DESC`;
     const sql2 = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
-// [result]如果右邊也是陣列，會按照順序放過去
+    // [result]如果右邊也是陣列，會按照順序放過去
     const [result] = await db.query(sql);
     const [r2]=await db.query(sql2);
-    // console.log("result",result);
+    console.log("result",result);
     // console.log("r2",r2);
+    // const newdata=[...result,...r2]
     const newdata=[result,r2]
-    // console.log("newdata123",newdata)
+    console.log("newdata123",newdata)
     res.json(result);
 });
 // 讀goodprice Activty

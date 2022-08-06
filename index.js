@@ -23,7 +23,6 @@ const jwt = require("jsonwebtoken");
 const app = express();
 
 app.set("case sensitive routing", true);
- 
 
 // Top-level middlewares
 const corsOptions = {
@@ -50,6 +49,9 @@ app.use(
 
 // middleware: 中介軟體 (function)
 // const bodyParser = express.urlencoded({extended: false});
+
+//頂層middleware 一進來就做 所有routs之前
+// TOP LEVEL middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -65,6 +67,7 @@ app.use((req, res, next) => {
     //解密寫在middle ware 才可以全部頁面都拿到token
     const auth = req.get("Authorization");
     res.locals.payload = null;
+
     if (auth && auth.indexOf("Bearer ") === 0) {
         const token = auth.slice(7);
         //jwt判定完成存進locals.payload 裡面
@@ -92,8 +95,7 @@ app.post("/try-post", (req, res) => {
 app.post("/willow-upload", willowupload.single("newsimg"), (req, res) => {
     res.json(req.file);
 });
-app.use("/willowimgs",express.static(__dirname + "/public/willowimgs"))
-
+app.use("/willowimgs", express.static(__dirname + "/public/willowimgs"));
 
 app.post("/try-uploads", upload.array("photos"), (req, res) => {
     res.json(req.files);
@@ -134,6 +136,66 @@ const willownewsR = require(__dirname + "/routes/willownews");
 app.use("/willownews", willownewsR);
 // const willownimgshow = require(__dirname + "/public/willowimgs");
 // app.use("/willowshowimg", willownimgshow);
+
+//willow admin 登入-----------------------------------------
+app.route("/adminlogin-jwt")
+    .get(async (req, res) => {
+        res.render("adminlogin-jwt");
+    })
+    .post(async (req, res) => {
+        const { admin_account, admin_password } = req.body;
+        console.log(admin_account, admin_password);
+        const output = {
+            admin_success: false,
+            admin_error: "",
+            admin_code: 0,
+            admin_data: {},
+        };
+        //用帳號撈會員資料
+        const sql = "SELECT * FROM willowadminuser WHERE account=?";
+        const [r1] = await db.query(sql, [admin_account]);
+        console.log(r1);
+        if (!r1.length) {
+            // 帳號錯誤
+            output.code = 401;
+            output.error = "帳密錯誤";
+            return res.json(output);
+        }
+        //const row = r1[0];
+        //密碼對比
+        // admin 不用
+        // output.success = await bcrypt.compare(
+        //     req.body.password,
+        //     r1[0].pass_hash
+        // );
+        //willow admin 密碼
+        if (r1[0].password !== admin_password) {
+            // 密碼錯誤
+            output.code = 401;
+            output.error = "帳密錯誤";
+            return res.json(output);
+        } else {
+            // 成功登入
+            //登入成功生成token
+            const admin_token = jwt.sign(
+                {
+                    admin_sid: r1[0].sid,
+                    admin_account: r1[0].account,
+                },
+                process.env.JWT_SECRET
+            );
+
+            output.admin_data = {
+                admin_token,
+                admin_sid: r1[0].sid,
+                admin_name: r1[0].name,
+                admin_account: r1[0].account,
+            };
+        }
+
+        res.json(output);
+    });
+// --------------------------------------------------------------
 
 //yuchen router--------------------------------------------------
 const memberRouter = require(__dirname + "/routes/member");

@@ -1,8 +1,8 @@
 const express = require("express");
 const db = require(__dirname + "/../modules/mysql-connect");
 const moment = require("moment-timezone");
-const { toDateString, toDatetimeString } = require(__dirname +
-    "/../modules/date-tools");
+// const { toDateString, toDatetimeString } = require(__dirname +
+//     "/../modules/date-tools");
 
 const Joi = require("joi");
 const upload = require(__dirname + "/../modules/upload-images");
@@ -10,24 +10,34 @@ const upload = require(__dirname + "/../modules/upload-images");
 const router = express.Router(); // 建立 router 物件
 // 讀news data
 router.get("/newsdata", async (req, res) => {
+  let newdata = [];
     const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=1 ORDER BY newsid DESC`;
-    const sql2 = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
+    // const sql2 = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
     // [result]如果右邊也是陣列，會按照順序放過去
     const [result] = await db.query(sql);
-    const [r2]=await db.query(sql2);
-    console.log("result",result);
+    // const [r2] = await db.query(sql2);
+    // console.log("result", result);
     // console.log("r2",r2);
     // const newdata=[...result,...r2]
-    const newdata=[result,r2]
-    console.log("newdata123",newdata)
-    res.json(result);
+
+    // newdata = [...newdata,result];
+    // console.log("newdata1", newdata);
+    // newdata = [...newdata,r2];
+    // console.log("newdata2", newdata);
+
+     res.json(result);
 });
 // 讀goodprice Activty
 router.get("/goodpricedata", async (req, res) => {
     const sql = `SELECT newsid,userid,starttime,finishtime,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
     const [result] = await db.query(sql);
-    result.forEach((el) => (el.starttime = toDateString(el.starttime),el.finishtime = toDateString(el.finishtime)));
-    console.log("goodpricedata",result)
+    result.forEach(
+        (el) => (
+            (el.starttime = res.locals.toDateString(el.starttime)),
+            (el.finishtime = res.locals.toDateString(el.finishtime))
+        )
+    );
+    console.log("goodpricedata", result);
     res.json(result);
 });
 // 讀goodwriting data
@@ -86,11 +96,18 @@ router.get("/newsupdate", async (req, res) => {
     res.json(result);
 });
 //讀進入goodprice-activty update畫面的get
+// 用res.locals.toDateString的原因，因為前面已經指定給res.locals
+// res.locals寫在頂層middleware，所以每個都會吃到
 router.get("/goodpriceupdate", async (req, res) => {
     const { sid } = req.query;
     const sql = `SELECT newsid,userid,starttime,finishtime,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsid=?`;
     const [result] = await db.query(sql, [sid]);
-    result.forEach((el) => (el.starttime = toDateString(el.starttime),el.finishtime = toDateString(el.finishtime)));
+    result.forEach(
+        (el) => (
+            (el.starttime = res.locals.toDateString(el.starttime)),
+            (el.finishtime = res.locals.toDateString(el.finishtime))
+        )
+    );
     console.log("result", result);
     res.json(result);
 });
@@ -107,8 +124,8 @@ router.get("/goodwritingupdate", async (req, res) => {
 
 // test
 router.get("/test", async (req, res) => {
-  const sql = `SELECT sid,test,test2 FROM rtest WHERE 1`;
-  const [result] = await db.query(sql);
+    const sql = `SELECT sid,test,test2 FROM rtest WHERE 1`;
+    const [result] = await db.query(sql);
     res.json(result);
 });
 
@@ -148,8 +165,17 @@ router.put("/goodpriceupdate", async (req, res) => {
         error: "",
         information: "",
     };
-    const { userid, newsid,starttime,finishtime, newstitle, words, newsimg, newsstyle } = req.body;
-    console.log("show",userid, newsid);
+    const {
+        userid,
+        newsid,
+        starttime,
+        finishtime,
+        newstitle,
+        words,
+        newsimg,
+        newsstyle,
+    } = req.body;
+    console.log("show", userid, newsid);
 
     const sql = `UPDATE willownews SET userid=?,starttime=?,finishtime=?,newstitle=?,words=?,newsimg=?,newsstyle=? WHERE  newsid=${newsid}`;
 

@@ -37,7 +37,7 @@ router.get("/goodpricedata", async (req, res) => {
             (el.finishtime = res.locals.toDateString(el.finishtime))
         )
     );
-    console.log("goodpricedata", result);
+    // console.log("goodpricedata", result);
     res.json(result);
 });
 // 讀goodwriting data
@@ -54,7 +54,7 @@ router.delete("/newsdata", async (req, res) => {
         error: "",
         information: "",
     };
-    console.log("req.query", req.query);
+    // console.log("req.query", req.query);
     const { sid } = req.query;
     if (!!req.query === true) {
         console.log(sid);
@@ -92,7 +92,7 @@ router.get("/newsupdate", async (req, res) => {
     const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsid=?`;
     const [result] = await db.query(sql, [sid]);
 
-    console.log(result);
+    // console.log(result);
     res.json(result);
 });
 //讀進入goodprice-activty update畫面的get
@@ -108,17 +108,17 @@ router.get("/goodpriceupdate", async (req, res) => {
             (el.finishtime = res.locals.toDateString(el.finishtime))
         )
     );
-    console.log("result", result);
+    // console.log("result", result);
     res.json(result);
 });
 //讀進入goodupdate畫面的get
 router.get("/goodwritingupdate", async (req, res) => {
     const { sid } = req.query;
-    console.log(sid);
+    // console.log(sid);
     const sql = `SELECT goodwritingid,userid,goodtitle,goodwords,goodimg FROM goodwriting WHERE goodwritingid=?`;
     const [result] = await db.query(sql, [sid]);
 
-    console.log(result);
+    // console.log(result);
     res.json(result);
 });
 

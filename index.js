@@ -77,6 +77,26 @@ app.use((req, res, next) => {
         console.log("payload", res.locals.payload);
     }
 
+    // willow admin login
+
+    // const willow_admin_auth = req.get("Authorization"),看有沒有這檔頭
+    const admin_auth = req.get("Authorization");
+    res.locals.admin_payload = null;
+    //willow_admin_auth.indexOf("Bearer ") === 0)，看有沒有在這個字串裡且在最前面(index=0)
+    if (admin_auth && admin_auth.indexOf("Bearer ") === 0) {
+        const admin_token = auth.slice(7);
+
+        //jwt判定完成存進locals.admin_payload 裡面
+        //jwt 每次request 都需要給token
+
+        // jwt.verify解密
+        res.locals.admin_payload = jwt.verify(
+            admin_token,
+            process.env.JWT_SECRET
+        );
+        // console.log("admin_payload", res.locals.admin_payload);
+    }
+    console.log("admin_payload", res.locals.admin_payload);
     next();
 });
 
@@ -157,29 +177,32 @@ app.route("/adminlogin-jwt")
         console.log(r1);
         if (!r1.length) {
             // 帳號錯誤
-            output.code = 401;
-            output.error = "帳密錯誤";
+            output.admin_code = 401;
+            output.admin_success = "帳密錯誤";
             return res.json(output);
         }
         //const row = r1[0];
         //密碼對比
         // admin 不用
-        // output.success = await bcrypt.compare(
+        // output.admin_success = await bcrypt.compare(
         //     req.body.password,
         //     r1[0].pass_hash
         // );
         //willow admin 密碼
         if (r1[0].password !== admin_password) {
             // 密碼錯誤
-            output.code = 401;
-            output.error = "帳密錯誤";
+            output.admin_code = 401;
+            output.admin_error = "帳密錯誤";
             return res.json(output);
         } else {
             // 成功登入
             //登入成功生成token
+            console.log("成功登入");
+            output.admin_success = true;
+ 
             const admin_token = jwt.sign(
                 {
-                    admin_sid: r1[0].sid,
+                    admin_sid: r1[0].userid,
                     admin_account: r1[0].account,
                 },
                 process.env.JWT_SECRET
@@ -187,12 +210,12 @@ app.route("/adminlogin-jwt")
 
             output.admin_data = {
                 admin_token,
-                admin_sid: r1[0].sid,
+                admin_sid: r1[0].userid,
                 admin_name: r1[0].name,
                 admin_account: r1[0].account,
             };
         }
-
+        console.log("output", output);
         res.json(output);
     });
 // --------------------------------------------------------------

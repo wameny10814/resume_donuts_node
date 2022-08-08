@@ -5,7 +5,7 @@ const db = require(__dirname + "/../modules/mysql-connect");
 const yuupload = require(__dirname + "/../modules/yu-upload-images");
 const { toDateString, toDatetimeString } = require(__dirname +
     "/../modules/date-tools");
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 //註冊會員
 router.post("/add", async (req, res) => {
@@ -48,7 +48,6 @@ router.get("/memberdata", async (req, res) => {
     //
     r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
     res.json(r2);
-
 });
 //修改會員資料
 router.post("/memberupdate", async (req, res) => {
@@ -68,7 +67,7 @@ router.post("/memberupdate", async (req, res) => {
         const loaddata = `SELECT account, birthday, email, mobile, address FROM member WHERE sid=${res.locals.payload.sid}`;
         const [r2] = await db.query(loaddata);
         r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
-        console.log('updatedata',r2);
+        console.log("updatedata", r2);
         res.json(r2);
     } else {
         const sql = `UPDATE member SET account=?, birthday=?,email=?,mobile=?,address=?,level=2 WHERE sid=${res.locals.payload.sid}`;
@@ -84,9 +83,8 @@ router.post("/memberupdate", async (req, res) => {
         const loaddata = `SELECT account, birthday, email, mobile, address FROM member WHERE sid=${res.locals.payload.sid}`;
         const [r2] = await db.query(loaddata);
         r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
-        console.log('result',r2);
+        console.log("result", r2);
         res.json(r2);
-
     }
 });
 //上傳頭貼
@@ -129,7 +127,7 @@ router.post("/membersdupdate", async (req, res) => {
         const sql = `UPDATE member SET pass_hash =? WHERE member.sid =${res.locals.payload.sid}`;
         var hash = await bcrypt.hash(psdNew, 10);
         const [querydone] = await db.query(sql, [hash]);
-        const result = {...querydone,success:true};
+        const result = { ...querydone, success: true };
         // console.log('result',result);
         res.json(result);
     } else {
@@ -140,46 +138,99 @@ router.post("/membersdupdate", async (req, res) => {
     }
 });
 
+router.post("/checkmail", async (req, res) => {
+    const output = {
+        success: false,
+    };
+    const sql = "SELECT * FROM member WHERE email=?";
+    const [r2] = await db.query(sql, [req.body.email]);
+    console.log("r2", r2[0].email);
+    const { email } = req.body;
+    if (!r2.length) {
+        console.log("2");
+        console.log("output", output);
+        output.success = false;
+        res.json(r2);
+    } else {
+        console.log("1");
+        //資料庫寫入驗證碼
+        const insertnumber = `UPDATE member SET valid=1111 WHERE member.email="${r2[0].email}"`;
+        const [r3] = await db.query(insertnumber, [req.body.email]);
 
-router.get("/mail", async (req, res) => {
- ///我是寄信!!!!
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    auth: {
-      user: 'sunnymail0705@gmail.com',
-      pass: 'uyigjlahpxbynays ',
-    },
-  });
-//信件內容!!!!
-var options = {
-    //寄件者
-    from: 'sunnymail0705@gmail.com',
-    //收件者
-    to: 'wameny10814@gmail.com', 
-    //副本
-    // cc: 'account3@gmail.com',
-    //密件副本
-    // bcc: 'account4@gmail.com',
-    //主旨
-    subject: 'title', // Subject line
-    //純文字
-    text: 'Hello world2', // plaintext body
-    //嵌入 html 的內文
-    html: '<h2>Why and How</h2> <p>The <a href="http://en.wikipedia.org/wiki/Lorem_ipsum" title="Lorem ipsum - Wikipedia, the free encyclopedia">Lorem ipsum</a> text is typically composed of pseudo-Latin words. It is commonly used as placeholder text to examine or demonstrate the visual effects of various graphic design. Since the text itself is meaningless, the viewers are therefore able to focus on the overall layout without being attracted to the text.</p>', 
-    //附件檔案
-  
-};
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            auth: {
+                user: "sunnymail0705@gmail.com",
+                
+            },
+        });
+        //信件內容!!!!
+        var options = {
+            //寄件者
+            from: "sunnymail0705@gmail.com",
+            //收件者
+            to: r2[0].email,
+            //副本
+            // cc: 'account3@gmail.com',
+            //密件副本
+            // bcc: 'account4@gmail.com',
+            //主旨
+            subject: "Pochi屋-忘記密碼驗證信", // Subject line
+            //純文字
+            text: " ", // plaintext body
+            //嵌入 html 的內文
+            html: "<h2>Pochi屋-忘記密碼驗證信/h2> <p>請輸入此段驗證碼:</p>",
+            //附件檔案
+        };
 
-// 信件發送!!!
-transporter.sendMail(options, function(error, info){
-    if(error){
-        console.log(error);
-    }else{
-        console.log('訊息發送: ' + info.response);
+        // 信件發送!!!
+        // transporter.sendMail(options, function (error, info) {
+        //     if (error) {
+        //         console.log(error);
+        //     } else {
+        //         console.log("訊息發送: " + info.response);
+        //     }
+        // });
+
+        const result = { ...r2, success: true };
+        res.json(result);
     }
 });
- 
+
+router.post("/checkvalid", async (req, res) => {
+    const output = {
+        success: false,
+    };
+
+    const sql = "SELECT * FROM member WHERE email=?";
+    const { email, valid } = req.body;
+    const [r1] = await db.query(sql, [email]);
+    console.log("r1", r1[0].valid);
+    if (r1[0].valid == valid) {
+        console.log("對比正確");
+        const result = { ...r1, success: true };
+        res.json(result);
+    } else {
+        console.log("對比失敗");
+        res.json(r1);
+    }
+});
+
+router.post("/checkvalidtochangepsd", async (req, res) => {
+    const output = {
+        success: false,
+    };
+    // const sql = "SELECT * FROM member WHERE email=?";
+    // console.log("r1", r1[0]);
+
+    const updatepsd = `UPDATE member SET pass_hash =? WHERE email=?`;
+    const { email, psdNew } = req.body;
+    var hash = await bcrypt.hash(psdNew, 10);
+    const [querydone] = await db.query(updatepsd, [hash,email]);
+    const result = { ...querydone, success: true };
+    // console.log('result',result);
+    res.json(result);
 });
 
 module.exports = router;

@@ -4,4 +4,4 @@ package-lock.json
 
 /public/fontawesome
 
-/routes/ignore
+/routes/ignore.js

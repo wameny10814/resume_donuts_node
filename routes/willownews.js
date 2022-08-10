@@ -8,6 +8,27 @@ const Joi = require("joi");
 const upload = require(__dirname + "/../modules/upload-images");
 
 const router = express.Router(); // 建立 router 物件
+
+//bing show
+router.get("/showalldata", async (req, res) => {
+    let newdata = [];
+      const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE 1 ORDER BY newsid DESC LIMIT 5` ;
+      // const sql2 = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
+      // [result]如果右邊也是陣列，會按照順序放過去
+      const [result] = await db.query(sql);
+      // const [r2] = await db.query(sql2);
+      // console.log("result", result);
+      // console.log("r2",r2);
+      // const newdata=[...result,...r2]
+  
+      // newdata = [...newdata,result];
+      // console.log("newdata1", newdata);
+      // newdata = [...newdata,r2];
+      // console.log("newdata2", newdata);
+  
+       res.json(result);
+  });
+
 // 讀news data
 router.get("/newsdata", async (req, res) => {
   let newdata = [];

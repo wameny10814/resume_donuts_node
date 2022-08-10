@@ -154,7 +154,7 @@ router.post("/checkmail", async (req, res) => {
     } else {
         console.log("1");
         //資料庫寫入驗證碼
-        const insertnumber = `UPDATE member SET valid=1111 WHERE member.email="${r2[0].email}"`;
+        const insertnumber = `UPDATE member SET valid=7542 WHERE member.email="${r2[0].email}"`;
         const [r3] = await db.query(insertnumber, [req.body.email]);
 
         const transporter = nodemailer.createTransport({
@@ -180,18 +180,18 @@ router.post("/checkmail", async (req, res) => {
             //純文字
             text: " ", // plaintext body
             //嵌入 html 的內文
-            html: "<h2>Pochi屋-忘記密碼驗證信/h2> <p>請輸入此段驗證碼:</p>",
+            html: "<h3>Pochi屋-忘記密碼驗證信</h3> <p>請輸入此段驗證碼:7542</p>",
             //附件檔案
         };
 
         // 信件發送!!!
-        // transporter.sendMail(options, function (error, info) {
-        //     if (error) {
-        //         console.log(error);
-        //     } else {
-        //         console.log("訊息發送: " + info.response);
-        //     }
-        // });
+        transporter.sendMail(options, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("訊息發送: " + info.response);
+            }
+        });
 
         const result = { ...r2, success: true };
         res.json(result);
@@ -234,7 +234,6 @@ router.post("/checkvalidtochangepsd", async (req, res) => {
 
 //拿取歷史訂單
 router.get("/memberhistory", async (req, res) => {
-    // const loaddata = `SELECT * FROM cart-orders WHERE member_sid=${res.locals.payload.sid}`;
     const loaddataa =`SELECT sid, member_sid, created_at, total_quantity, pay_price, pay_type, store_name, market_name, ship_name, ship_phone, ship_email, ship_address, discount_code FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
     
     // console.log('sid',res.locals.payload.sid);

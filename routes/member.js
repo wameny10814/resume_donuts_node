@@ -105,11 +105,11 @@ router.post("/yuupload", yuupload.single("avatar"), async (req, res) => {
         db.query(sql, [req.file.filename], function (err, result) {
             console.log("inserted 88 data");
         });
-
+        console.log('req',req.file)
         res.json(req.file);
     }
 });
-
+//修改密碼
 router.post("/membersdupdate", async (req, res) => {
     const output = {
         success: false,
@@ -137,7 +137,7 @@ router.post("/membersdupdate", async (req, res) => {
         res.json(output);
     }
 });
-
+//忘記密碼-email驗證
 router.post("/checkmail", async (req, res) => {
     const output = {
         success: false,
@@ -197,7 +197,7 @@ router.post("/checkmail", async (req, res) => {
         res.json(result);
     }
 });
-
+//忘記密碼-驗證碼認證
 router.post("/checkvalid", async (req, res) => {
     const output = {
         success: false,
@@ -216,7 +216,7 @@ router.post("/checkvalid", async (req, res) => {
         res.json(r1);
     }
 });
-
+//忘記密碼-輸入新一組密碼寫入資料庫
 router.post("/checkvalidtochangepsd", async (req, res) => {
     const output = {
         success: false,
@@ -229,8 +229,19 @@ router.post("/checkvalidtochangepsd", async (req, res) => {
     var hash = await bcrypt.hash(psdNew, 10);
     const [querydone] = await db.query(updatepsd, [hash,email]);
     const result = { ...querydone, success: true };
-    // console.log('result',result);
     res.json(result);
+});
+
+//拿取歷史訂單
+router.get("/memberhistory", async (req, res) => {
+    // const loaddata = `SELECT * FROM cart-orders WHERE member_sid=${res.locals.payload.sid}`;
+    const loaddataa =`SELECT sid, member_sid, created_at, total_quantity, pay_price, pay_type, store_name, market_name, ship_name, ship_phone, ship_email, ship_address, discount_code FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
+    
+    // console.log('sid',res.locals.payload.sid);
+    const [r2] = await db.query(loaddataa);
+
+    console.log('r2',r2);
+    res.json(r2);
 });
 
 module.exports = router;

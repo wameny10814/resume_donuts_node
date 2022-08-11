@@ -162,6 +162,7 @@ router.post("/checkmail", async (req, res) => {
             port: 465,
             auth: {
                 user: "sunnymail0705@gmail.com",
+                pass: 'uyigjlahpxbynays ',
                 
             },
         });

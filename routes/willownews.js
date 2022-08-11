@@ -8,6 +8,15 @@ const Joi = require("joi");
 const upload = require(__dirname + "/../modules/upload-images");
 
 const router = express.Router(); // 建立 router 物件
+
+//bing show
+router.get("/showalldata", async (req, res) => {
+    let newdata = [];
+      const sql = `SELECT newsid,userid,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE 1 ORDER BY newsid DESC LIMIT 5` ;
+      const [result] = await db.query(sql);
+       res.json(result);
+  });
+
 // 讀news data
 router.get("/newsdata", async (req, res) => {
   let newdata = [];

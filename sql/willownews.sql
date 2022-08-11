@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2022-08-05 09:38:24
+-- 產生時間： 2022-08-11 09:52:58
 -- 伺服器版本： 10.4.24-MariaDB
 -- PHP 版本： 7.4.29
 
@@ -53,7 +53,8 @@ INSERT INTO `willownews` (`newsid`, `userid`, `starttime`, `finishtime`, `newsti
 (26, 0, '2022-08-25 00:00:00', '2022-09-10 00:00:00', '蕙蕙蕙123', '蕙蕙蕙333', 'b72c4e85-e474-4fc3-b89b-7a3b1a66e997.jpg', 2, '2022-08-05 12:40:42'),
 (27, 0, '2022-08-09 00:00:00', '2022-09-27 00:00:00', '蕙蕙蕙123', 'qweqweqweqweqweqewqweqwe', 'e6080e13-2e83-4cee-a440-492d5d9d898d.jpg', 2, '2022-08-05 13:22:04'),
 (28, 0, '2022-07-01 00:00:00', '2022-08-01 00:00:00', '蕙蕙dadadd蕙123eeeddddee', '蕙asdadad蕙蕙333eeeddddee', '7431fdfe-59cd-4878-bd82-632b218de7c0.png', 2, '2022-08-05 13:22:41'),
-(29, 0, '2022-07-31 00:00:00', '2022-08-12 00:00:00', '李炳翰', '李炳翰', '0dc043a6-ab55-4972-b1ae-276d4b172d6a.jpg', 2, '2022-08-05 14:50:11');
+(29, 0, '2022-07-31 00:00:00', '2022-08-12 00:00:00', '李炳翰', '李炳翰', '0dc043a6-ab55-4972-b1ae-276d4b172d6a.jpg', 2, '2022-08-05 14:50:11'),
+(30, 0, '2022-08-10 16:35:12', '2022-08-10 16:35:12', 'qweqwe', 'qweqweqwe', '1335ce3e-350e-480e-90e9-33be96c94c2f.png', 1, '2022-08-10 16:35:12');
 
 --
 -- 已傾印資料表的索引
@@ -73,7 +74,7 @@ ALTER TABLE `willownews`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `willownews`
 --
 ALTER TABLE `willownews`
-  MODIFY `newsid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `newsid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

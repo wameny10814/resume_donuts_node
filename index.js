@@ -151,6 +151,9 @@ const addressbook = require(__dirname + "/routes/address-book1");
 // prefix 前綴路徑
 app.use("/address-book", addressbook);
 
+//binghan router
+const binghan = require(__dirname + "/routes/binghan");
+app.use("/binghan", binghan);
 //willow router
 const willownewsR = require(__dirname + "/routes/willownews");
 app.use("/willownews", willownewsR);

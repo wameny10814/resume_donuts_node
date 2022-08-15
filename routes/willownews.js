@@ -31,10 +31,38 @@ router.get("/showalldata", async (req, res) => {
   res.json(result);
 });
 
+// 讀grap時間 data
+router.get("/graptimedata", async (req, res) => {
+  const { sid } = req.query;
+  const numsid=+sid;
+  let sql='';
+console.log(numsid );
+  if(numsid===1){
+    console.log("11")
+  sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 2 WEEK)`;
+  }else if(numsid===2){
+    console.log("12")
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 3 MONTH) `;
+  }else if(numsid===3){
+    console.log("13")
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
+  }
+  const [result] = await db.query(sql);
+  result.forEach(
+    (el) => (
+      (el.created_at = res.locals.toDateString(el.created_at))
+    )
+  );
+  // console.log("goodpricedata", result);
+  res.json(result);
+});
 
 // 讀grap data
 router.get("/grapdata", async (req, res) => {
-  const sql = `SELECT d.sid, member_sid, created_at, total_quantity, pay_price, member_age,d.p_name,d.product_sid FROM cart_orders as c,willowcart_member_age as w ,cart_orderdetail as d WHERE d.orders_id=c.sid AND c.member_sid=w.sid;`;
+  const sql = `SELECT d.sid, member_sid, created_at, quantity, pay_price, member_age,d.p_name,d.product_sid FROM cart_orders as c,willowcart_member_age as w ,cart_orderdetail as d WHERE d.orders_id=c.sid AND c.member_sid=w.sid`;
   const [result] = await db.query(sql);
 
   // console.log("goodpricedata", result);

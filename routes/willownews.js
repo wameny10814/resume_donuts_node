@@ -36,13 +36,25 @@ router.get("/newsdata", async (req, res) => {
 
      res.json(result);
 });
+
+// 讀grap data
+router.get("/grapdata", async (req, res) => {
+    const sql = `SELECT d.sid, member_sid, created_at, total_quantity, pay_price, member_age,d.p_name,d.product_sid FROM cart_orders as c,willowcart_member_age as w ,cart_orderdetail as d WHERE d.orders_id=c.sid AND c.member_sid=w.sid;`;
+    const [result] = await db.query(sql);
+  
+    // console.log("goodpricedata", result);
+    res.json(result);
+});
+
+
+
 // 讀goodprice Activty
 router.get("/goodpricedata", async (req, res) => {
     const sql = `SELECT newsid,userid,starttime,finishtime,newstitle,words,newsimg,newsstyle,news_at FROM willownews WHERE newsstyle=2 ORDER BY newsid DESC`;
     const [result] = await db.query(sql);
     result.forEach(
         (el) => (
-            (el.starttime = res.locals.toDateString(el.starttime)),
+        (el.starttime = res.locals.toDateString(el.starttime)),
             (el.finishtime = res.locals.toDateString(el.finishtime))
         )
     );
@@ -51,7 +63,7 @@ router.get("/goodpricedata", async (req, res) => {
 });
 // 讀goodwriting data
 router.get("/goodwritingdata", async (req, res) => {
-    const sql = `SELECT * FROM goodwriting WHERE 1 ORDER BY goodwritingid DESC`;
+const sql = `SELECT * FROM goodwriting WHERE 1 ORDER BY goodwritingid DESC`;
     const [result] = await db.query(sql);
     res.json(result);
 });

@@ -33,29 +33,44 @@ router.get("/showalldata", async (req, res) => {
 
 // 讀grap時間 data
 router.get("/graptimedata", async (req, res) => {
-  const { sid } = req.query;
+  const { sid, start,end} = req.query;
+  console.log("start,end",start,end)
   const numsid=+sid;
   let sql='';
 console.log("numsid",numsid );
   if(numsid===1){
     console.log("11")
   sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
-  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 1 MONTH)`;
+  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)`;
   }else if(numsid===2){
     console.log("12")
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
-    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 6 MONTH) `;
+    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 1 MONTH) `;
   }else if(numsid===3){
     console.log("13")
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
-    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
+    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 3 MONTH)`;
+  }else if(numsid===4){
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 6 MONTH)`;
   }
+  else if(numsid===5){
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
+  }else if(numsid===6){
+
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d where d.orders_id=c.sid AND created_at BETWEEN '${start}' AND '${end}'`;
+
+
+  }else{ sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;}
   const [result] = await db.query(sql);
   result.forEach(
     (el) => (
       (el.created_at = res.locals.toDateString(el.created_at))
     )
   );
+  console.log("resul",result,typeof(start))
   // console.log("goodpricedata", result);
   res.json(result);
 });

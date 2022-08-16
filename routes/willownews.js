@@ -36,15 +36,15 @@ router.get("/graptimedata", async (req, res) => {
   const { sid } = req.query;
   const numsid=+sid;
   let sql='';
-console.log(numsid );
+console.log("numsid",numsid );
   if(numsid===1){
     console.log("11")
   sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
-  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 2 WEEK)`;
+  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 1 MONTH)`;
   }else if(numsid===2){
     console.log("12")
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
-    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 3 MONTH) `;
+    where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 6 MONTH) `;
   }else if(numsid===3){
     console.log("13")
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 

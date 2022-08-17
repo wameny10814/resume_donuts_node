@@ -8,6 +8,34 @@ const Joi = require("joi");
 const upload = require(__dirname + "/../modules/upload-images");
 
 const router = express.Router(); // 建立 router 物件
+
+//AddCustom
+router.post("/addcustom", async (req, res) => {
+  const { mem,img, donut, layer, decoration, price } = req.body;
+  console.log(req.body);
+  let output = {
+    success: false,
+    data: req.body,
+    error: "",
+    information: "",
+  };
+  if (!!req.body === true) {
+    const sql =
+      "INSERT INTO `customdata`(`mem`, `img`, `donut`, `layer`, `decoration`, `price`) VALUES (?,?,?,?,?,?)";
+
+    const [result] = await db.query(sql, [
+      mem,
+      img,
+      donut,
+      layer,
+      decoration,
+      price,
+    ]);
+    output.success = true;
+    output.information = "insert ok";
+  }
+  res.json(output);
+});
 //Count
 router.get("/count", async (req, res) => {
   let output = {
@@ -34,27 +62,25 @@ router.get("/showalldata", async (req, res) => {
 // 讀grap時間 data
 router.get("/graptimedata", async (req, res) => {
   const { sid } = req.query;
-  const numsid=+sid;
-  let sql='';
-console.log(numsid );
-  if(numsid===1){
-    console.log("11")
-  sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+  const numsid = +sid;
+  let sql = "";
+  console.log(numsid);
+  if (numsid === 1) {
+    console.log("11");
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
   where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 2 WEEK)`;
-  }else if(numsid===2){
-    console.log("12")
+  } else if (numsid === 2) {
+    console.log("12");
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 3 MONTH) `;
-  }else if(numsid===3){
-    console.log("13")
+  } else if (numsid === 3) {
+    console.log("13");
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
   }
   const [result] = await db.query(sql);
   result.forEach(
-    (el) => (
-      (el.created_at = res.locals.toDateString(el.created_at))
-    )
+    (el) => (el.created_at = res.locals.toDateString(el.created_at))
   );
   // console.log("goodpricedata", result);
   res.json(result);
@@ -68,8 +94,6 @@ router.get("/grapdata", async (req, res) => {
   // console.log("goodpricedata", result);
   res.json(result);
 });
-
-
 
 // 讀news data
 router.get("/newsdata", async (req, res) => {

@@ -47,7 +47,8 @@ router.get("/memberdata", async (req, res) => {
     const [r2] = await db.query(loaddata);
     //
     r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
-    res.json(r2);
+    console.log('r2',r2[0]);
+    res.json(r2[0]);
 });
 //修改會員資料
 router.post("/memberupdate", async (req, res) => {

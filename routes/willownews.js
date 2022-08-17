@@ -9,10 +9,18 @@ const upload = require(__dirname + "/../modules/upload-images");
 
 const router = express.Router(); // 建立 router 物件
 
+//ReadCustom
+router.get("/readcustom", async (req, res) => {
+  let newdata = [];
+  const { sid } = req.query;
+  const sql = `SELECT * FROM customdata WHERE mem = ${sid}`;
+  const [result] = await db.query(sql);
+  res.json(result);
+});
+
 //AddCustom
 router.post("/addcustom", async (req, res) => {
-  const { mem,img, donut, layer, decoration, price } = req.body;
-  console.log(req.body);
+  const { mem, img, donut, layer, decoration, price } = req.body;
   let output = {
     success: false,
     data: req.body,
@@ -62,28 +70,27 @@ router.get("/showalldata", async (req, res) => {
 // 讀grap時間 data
 router.get("/graptimedata", async (req, res) => {
   const { sid } = req.query;
-  const numsid=+sid;
-  let sql='';
-console.log(numsid );
-  if(numsid===1){
-    console.log("11")
-  sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+  const numsid = +sid;
+  let sql = "";
+  console.log(numsid);
+  if (numsid === 1) {
+    console.log("11");
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
   where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 2 WEEK)`;
-  }else if(numsid===2){
-    console.log("12")
+  } else if (numsid === 2) {
+    console.log("12");
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 3 MONTH) `;
-  }else if(numsid===3){
-    console.log("13")
+  } else if (numsid === 3) {
+    console.log("13");
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
-  }else if(numsid===6){
-
+  } else if (numsid === 6) {
     sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d where d.orders_id=c.sid AND created_at BETWEEN '${start}' AND '${end}'`;
-
-
-  }else{ sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
-  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;}
+  } else {
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+  where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
+  }
   const [result] = await db.query(sql);
   result.forEach(
     (el) => (el.created_at = res.locals.toDateString(el.created_at))

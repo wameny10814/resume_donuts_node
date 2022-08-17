@@ -70,7 +70,7 @@ console.log("numsid",numsid );
       (el.created_at = res.locals.toDateString(el.created_at))
     )
   );
-  console.log("resul",result,typeof(start))
+  // console.log("resul",result,typeof(start))
   // console.log("goodpricedata", result);
   res.json(result);
 });

@@ -282,10 +282,6 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-
-// loveyu 訂單帶入會員資料 ----------------------------
-
-
 //loveyu router
 const CartsData = require(__dirname + "/routes/CartsData");
 app.use("/CartsData", CartsData);

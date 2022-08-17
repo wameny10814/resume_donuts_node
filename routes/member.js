@@ -43,11 +43,52 @@ router.post("/add", async (req, res) => {
 });
 //撈取現在資料庫資料
 router.get("/memberdata", async (req, res) => {
+    //撈會員資料表資料
     const loaddata = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
-    const [r2] = await db.query(loaddata);
-    //
-    r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
-    res.json(r2);
+    //撈訂單筆數
+    const loadpohistory = `SELECT * FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
+    const [r3] = await db.query(loadpohistory);
+    // console.log('r3', r3);
+    // console.log('r3length', r3.length);
+
+    if (r3.length >= 3) {
+        console.log('add');
+        const inserlevel3 = `UPDATE member SET level=3 WHERE member.sid =${res.locals.payload.sid}`;
+        const [r1] = await db.query(inserlevel3);
+        const reloaddata = `SELECT sid, account, pass_hash, name, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
+        const [r2] = await db.query(reloaddata);
+        r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
+        console.log('r2',r2);
+        res.json(r2[0]);
+    } else {
+        //load 會員資料
+        console.log('r3lengthaddnoooooooooo');
+        const [r2] = await db.query(loaddata);
+        //轉換日期
+        r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
+        // console.log('r2',r2);
+        // res.json(r2);
+        // r2 [
+        //     {
+        //       sid: 1,
+        //       account: '1',
+        //       pass_hash: '$2b$10$R9mDXPmN3UDyH2hR2YT.duxZrp.zSozPkO2GPsAwq7QNHx0EsTkzq',
+        //       name: '',
+        //       birthday: '2022-09-02',
+        //       email: '',
+        //       mobile: '',
+        //       address: '',
+        //       avatar: '20cb0354-fa06-400c-a829-5bdf60894c6f.jpg',
+        //       level: 2,
+        //       creat_at: 2022-07-28T02:11:49.000Z
+        //     }
+        //   ]
+        // const result = { ...r2[0], pocount: r3.length };
+        // console.log('result',result);
+        res.json(r2[0]);
+    }
+
+
 });
 //修改會員資料
 router.post("/memberupdate", async (req, res) => {
@@ -105,7 +146,7 @@ router.post("/yuupload", yuupload.single("avatar"), async (req, res) => {
         db.query(sql, [req.file.filename], function (err, result) {
             console.log("inserted 88 data");
         });
-        console.log('req',req.file)
+        console.log('req', req.file)
         res.json(req.file);
     }
 });
@@ -163,7 +204,7 @@ router.post("/checkmail", async (req, res) => {
             auth: {
                 user: "sunnymail0705@gmail.com",
                 pass: 'uyigjlahpxbynays ',
-                
+
             },
         });
         //信件內容!!!!
@@ -228,19 +269,19 @@ router.post("/checkvalidtochangepsd", async (req, res) => {
     const updatepsd = `UPDATE member SET pass_hash =? WHERE email=?`;
     const { email, psdNew } = req.body;
     var hash = await bcrypt.hash(psdNew, 10);
-    const [querydone] = await db.query(updatepsd, [hash,email]);
+    const [querydone] = await db.query(updatepsd, [hash, email]);
     const result = { ...querydone, success: true };
     res.json(result);
 });
 
 //拿取歷史訂單
 router.get("/memberhistory", async (req, res) => {
-    const loaddataa =`SELECT sid,  created_at,  pay_price, pay_type FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
-    
+    const loaddataa = `SELECT sid,  created_at,  pay_price, pay_type FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
+
     // console.log('sid',res.locals.payload.sid);
     const [r2] = await db.query(loaddataa);
 
-    console.log('r2',r2);
+    console.log('r2', r2);
     res.json(r2);
 });
 

@@ -89,6 +89,7 @@ router.get("/memberdata", async (req, res) => {
     }
 
 
+
 });
 //修改會員資料
 router.post("/memberupdate", async (req, res) => {
@@ -185,15 +186,15 @@ router.post("/checkmail", async (req, res) => {
     };
     const sql = "SELECT * FROM member WHERE email=?";
     const [r2] = await db.query(sql, [req.body.email]);
-    console.log("r2", r2[0].email);
+    // console.log("r2", r2[0].email);
     const { email } = req.body;
     if (!r2.length) {
-        console.log("2");
-        console.log("output", output);
+        // console.log("2");
+        // console.log("output", output);
         output.success = false;
         res.json(r2);
     } else {
-        console.log("1");
+        // console.log("1");
         //資料庫寫入驗證碼
         const insertnumber = `UPDATE member SET valid=7542 WHERE member.email="${r2[0].email}"`;
         const [r3] = await db.query(insertnumber, [req.body.email]);

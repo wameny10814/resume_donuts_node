@@ -282,18 +282,15 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-// loveyu 購物車寫入資料庫 ----------------------------
-app.get("/home", (req, res) => {
-  res.json({
-    name: "Bill9999",
-    age: 999,
-  });
-});
-app.post("/home", (req, res) => {
-  console.log(req.body);
-});
+
 // loveyu 訂單帶入會員資料 ----------------------------
 
+
+//loveyu router
+const CartsData = require(__dirname + "/routes/CartsData");
+app.use("/CartsData", CartsData);
+// const willownimgshow = require(__dirname + "/public/willowimgs");
+// app.use("/willowshowimg", willownimgshow);
 
 // ------- static folder -----------
 app.use(express.static("public"));

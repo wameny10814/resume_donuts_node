@@ -283,10 +283,8 @@ app.get("/logout", (req, res) => {
 });
 
 //loveyu router
-const CartsData = require(__dirname + "/routes/CartsData");
-app.use("/CartsData", CartsData);
-// const willownimgshow = require(__dirname + "/public/willowimgs");
-// app.use("/willowshowimg", willownimgshow);
+const cartsData = require(__dirname + "/routes/cartsData");
+app.use("/cartsData", cartsData);
 
 // ------- static folder -----------
 app.use(express.static("public"));

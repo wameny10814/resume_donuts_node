@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2022-08-18 08:39:05
+-- 產生時間： 2022-08-18 11:57:45
 -- 伺服器版本： 10.4.24-MariaDB
 -- PHP 版本： 7.4.29
 
@@ -33,7 +33,7 @@ CREATE TABLE `member` (
   `pass_hash` varchar(255) NOT NULL,
   `birthday` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `email` varchar(255) DEFAULT NULL,
-  `mobile` varchar(11) NOT NULL,
+  `mobile` varchar(11) DEFAULT '9',
   `address` varchar(255) NOT NULL DEFAULT '未有住址',
   `avatar` varchar(255) DEFAULT NULL,
   `level` int(11) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `member` (
 --
 
 INSERT INTO `member` (`sid`, `account`, `pass_hash`, `birthday`, `email`, `mobile`, `address`, `avatar`, `level`, `valid`, `creat_at`) VALUES
-(1, '1', '$2b$10$R9mDXPmN3UDyH2hR2YT.duxZrp.zSozPkO2GPsAwq7QNHx0EsTkzq', '2022-08-17 13:55:52', 'FDSF@mail.com', '05785847366', 'tretgrtggdgdfg', '7d016921-950e-4db4-9f23-002f0f653315.jpg', 3, 0, '2022-07-28 10:11:49'),
+(1, '1', '$2b$10$R9mDXPmN3UDyH2hR2YT.duxZrp.zSozPkO2GPsAwq7QNHx0EsTkzq', '2022-08-22 00:00:00', NULL, '', 'gggg', '7d016921-950e-4db4-9f23-002f0f653315.jpg', 3, 0, '2022-07-28 10:11:49'),
 (2, '7gfgdfg', '11gdfgfg', '0000-00-00 00:00:00', 'ggfdgdfg', '0', '', '', 1, 0, '2022-07-28 10:12:26'),
 (3, 'dsadasd', 'dsadads', '2022-07-13 00:00:00', 'dsad@hamcl.com', '0', '', '', 1, 0, '2022-07-28 10:48:38'),
 (4, 'FDSFSDF', 'fdsfsdf', '2022-07-19 00:00:00', 'fdsfd@mail.com', '0', '', '', 1, 0, '2022-07-28 10:49:44'),
@@ -73,7 +73,7 @@ INSERT INTO `member` (`sid`, `account`, `pass_hash`, `birthday`, `email`, `mobil
 (27, 'member9', '$2b$10$b7/evL7rwWxjAqOelZCTne2lcjRdJCWps7gIHFJ8eiY5J4JoYtTai', '2022-08-25 00:00:00', '', '0513254123', '台北市文心路654號', 'd142d887-4941-420c-bcf9-154259136b56.jpg', 2, 0, '2022-08-10 11:35:13'),
 (28, 'member10', '$2b$10$q9Q8qleupDiaRsjoY31BdeCiA/TklAtGoAdQBAwQXeHogKtJQshhy', '2022-08-10 11:39:47', 'member10@mail.com', '', '', '1c36419e-d90b-4afa-9b2d-59d2e2fdd40a.jpg', 1, 0, '2022-08-10 11:37:30'),
 (29, 'member11', '$2b$10$Y9wpBdhjwhBROnepr0xR2.B6gAFtAAvubrGsGr0n9aIjF0yOpvWQG', '2022-08-10 11:41:22', 'member11@mail.com', '', '', '232832f7-79b6-413b-a876-bf0cbb8f4656.jpg', 1, 0, '2022-08-10 11:40:56'),
-(30, 'member12', '$2b$10$FZhA2HGoAChPF.o9ShjDyeQ0e9dTw2MOz7DI9PJv49N.Sz03t.SF.', '2022-08-10 11:46:30', 'member12@mail.com', '', '', '6f3157f6-5878-4527-9f83-1a50e2d755ef.jpg', 1, 0, '2022-08-10 11:46:09'),
+(30, 'member12', '$2b$10$FZhA2HGoAChPF.o9ShjDyeQ0e9dTw2MOz7DI9PJv49N.Sz03t.SF.', '0000-00-00 00:00:00', NULL, '05953214563', '新竹市墨以路125號', '6f3157f6-5878-4527-9f83-1a50e2d755ef.jpg', 3, 0, '2022-08-10 11:46:09'),
 (31, 'member13', '$2b$10$x6TsEKVmyWqZJnhny0TFsuAJlnrBAOXtFu2JIzh2BuABMY7ve9SZC', '2022-08-10 11:52:30', 'member13@mail.com', '', '', '36ec6383-bcb0-46b9-a487-3a9bb98d5191.jpg', 1, 0, '2022-08-10 11:48:33'),
 (32, 'member14', '$2b$10$ULmObMFitDKlBb5T6jIM4ex2PrNsB58x1H/bEHfs3gU06Lul5owLG', '2022-08-10 11:53:22', 'member14@mail.com', '', '', '1dd1bcbe-4470-4a2b-a736-5beceb680c65.jpg', 1, 0, '2022-08-10 11:53:07'),
 (33, 'member15', '$2b$10$0ipbQQStN1A1.lGlbbAgb.0vveASNZiqkFp5bc3EgGawLRhumfZfG', '2022-08-10 11:56:01', 'member15@mail.com', '', '', '3e8383ad-3211-4906-a966-bc78550a92e1.jpg', 1, 0, '2022-08-10 11:55:36'),
@@ -94,7 +94,8 @@ INSERT INTO `member` (`sid`, `account`, `pass_hash`, `birthday`, `email`, `mobil
 (48, 'member51', '$2b$10$WWhUSo2mwwfX8UDpOB3EueZ72z13eiiAiw4jvAfP0eANc9Jsbo4zO', '2022-08-08 00:00:00', 'member51@mail.com', '', '', '', 0, 0, '2022-08-18 12:10:27'),
 (49, 'member52', '$2b$10$t4/KVAURBg0SpLdXdfDfLu.x3NZagKa3ABUh1IUEhox8ySOdqP8VK', '2022-08-29 00:00:00', 'member52@mail.com', '', '', '', 0, 0, '2022-08-18 12:12:17'),
 (50, 'member53', '$2b$10$zsOv5SCrgREqwxqtu0.9quwYKdG16.L2eFA46irm/E7DXaEgU7vDi', '2022-08-09 00:00:00', 'member53@mail.com', '', '', '', 0, 0, '2022-08-18 12:13:52'),
-(51, 'member54', '$2b$10$x/4ddwogsUodUemVPUc./ug5IHfzoFNElVu6t48bOq6Q42VEsHViW', '2022-08-10 00:00:00', NULL, '', 'fdsfdsfdsfsdfds', 'f76d0734-ecdd-4726-bc1a-7191f070e438.jpg', 2, 7542, '2022-08-18 14:23:42');
+(51, 'member54', '$2b$10$x/4ddwogsUodUemVPUc./ug5IHfzoFNElVu6t48bOq6Q42VEsHViW', '2022-08-10 00:00:00', NULL, '', 'fdsfdsfdsfsdfds', 'f76d0734-ecdd-4726-bc1a-7191f070e438.jpg', 2, 7542, '2022-08-18 14:23:42'),
+(52, 'member56', '$2b$10$fD7CqMhTHG.lm0nmSXGzWunBppnfX8pph7ZG8dMO5y3FEP2B.I0nO', '2022-08-23 00:00:00', 'member56@mail.com', '9', '未有住址', NULL, 0, 0, '2022-08-18 17:56:20');
 
 --
 -- 已傾印資料表的索引
@@ -114,7 +115,7 @@ ALTER TABLE `member`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member`
 --
 ALTER TABLE `member`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -48,26 +48,18 @@ router.get("/memberdata", async (req, res) => {
     //撈訂單筆數
     const loadpohistory = `SELECT * FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
     const [r3] = await db.query(loadpohistory);
-    // console.log('r3', r3);
-    // console.log('r3length', r3.length);
-
     if (r3.length >= 3) {
-        console.log('add');
         const inserlevel3 = `UPDATE member SET level=3 WHERE member.sid =${res.locals.payload.sid}`;
         const [r1] = await db.query(inserlevel3);
         const reloaddata = `SELECT sid, account, pass_hash, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
         const [r2] = await db.query(reloaddata);
         r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
-        console.log('r2',r2);
         res.json(r2[0]);
     } else {
         //load 會員資料
-        console.log('r3lengthaddnoooooooooo');
         const [r2] = await db.query(loaddata);
         //轉換日期
         r2.forEach((el) => (el.birthday = toDateString(el.birthday)));
-        // console.log('r2',r2);
-        // res.json(r2);
         // r2 [
         //     {
         //       sid: 1,

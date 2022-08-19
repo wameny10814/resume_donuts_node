@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2022-08-19 06:50:20
+-- 產生時間： 2022-08-19 10:47:33
 -- 伺服器版本： 10.4.24-MariaDB
 -- PHP 版本： 7.4.29
 
@@ -137,7 +137,8 @@ INSERT INTO `willow_cart_orderdetail` (`sid`, `orders_id`, `product_sid`, `p_nam
 (94, 87, 2, '宇治抹茶波堤', 500, 10),
 (95, 88, 2, '宇治抹茶波堤', 400, 8),
 (96, 89, 3, '歐菲香', 480, 12),
-(97, 90, 4, '巧克力歐菲香', 900, 20);
+(97, 90, 4, '巧克力歐菲香', 900, 20),
+(98, 91, 4, '巧克力歐菲香', 900, 20);
 
 --
 -- 已傾印資料表的索引
@@ -157,7 +158,7 @@ ALTER TABLE `willow_cart_orderdetail`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `willow_cart_orderdetail`
 --
 ALTER TABLE `willow_cart_orderdetail`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

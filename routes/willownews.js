@@ -49,8 +49,7 @@ router.get("/count", async (req, res) => {
   let output = {
     count: 0,
   };
-  //  output.count['COUNT(*)']
-  //   SELECT COUNT(*) AS con FROM cart_orders WHERE 1
+  
   const sql = `SELECT COUNT(*) FROM cart_orders WHERE 1`;
   const [[{ "COUNT(*)": result }]] = await db.query(sql);
   output.count = result;
@@ -75,29 +74,29 @@ router.get("/graptimedata", async (req, res) => {
 console.log(numsid );
   if(numsid===1){
     console.log("11")
-  sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+  sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM willow_cart_orders as c,willow_cart_orderdetail as d 
   where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)`;
   }else if(numsid===2){
     console.log("12")
-    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM willow_cart_orders as c,willow_cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(), INTERVAL 1 MONTH) `;
   }else if(numsid===3){
     console.log("13")
-    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM willow_cart_orders as c,willow_cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 3 MONTH)`;
   }else if(numsid===4){
     console.log("13")
-    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM willow_cart_orders as c,willow_cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 6 MONTH)`;
   }else if(numsid===5){
     console.log("13")
-    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM willow_cart_orders as c,willow_cart_orderdetail as d 
     where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
   } else if (numsid === 6) {
-    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d where d.orders_id=c.sid AND created_at BETWEEN '${start}' AND '${end}'`;
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM willow_cart_orders as c,willow_cart_orderdetail as d where d.orders_id=c.sid AND created_at BETWEEN '${start}' AND '${end}'`;
 
   }else{ 
-    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM cart_orders as c,cart_orderdetail as d 
+    sql = `SELECT d.sid, member_sid, created_at,d.product_sid,d.p_name, quantity, pay_price FROM willow_cart_orders as c,willow_cart_orderdetail as d 
   where d.orders_id=c.sid AND created_at>DATE_SUB(CURDATE(),INTERVAL 1 YEAR)`;
 }
   const [result] = await db.query(sql);
@@ -111,7 +110,7 @@ console.log(numsid );
 
 // 讀grap data
 router.get("/grapdata", async (req, res) => {
-  const sql = `SELECT d.sid, member_sid, created_at, quantity, pay_price, member_age,d.p_name,d.product_sid FROM cart_orders as c,willowcart_member_age as w ,cart_orderdetail as d WHERE d.orders_id=c.sid AND c.member_sid=w.sid`;
+  const sql = `SELECT d.sid, member_sid, created_at, quantity, pay_price, member_age,d.p_name,d.product_sid FROM willow_cart_orders as c,willowcart_member_age as w ,willow_cart_orderdetail as d WHERE d.orders_id=c.sid AND c.member_sid=w.sid`;
   const [result] = await db.query(sql);
 
   // console.log("goodpricedata", result);

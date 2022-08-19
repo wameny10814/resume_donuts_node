@@ -257,7 +257,7 @@ router.post("/checkvalidtochangepsd", async (req, res) => {
         success: false,
     };
     console.log('body',req.body);
-    const updatepsd = `UPDATE member SET pass_hash =? WHERE email=?`;
+    const updatepsd = `UPDATE member SET pass_hash=? WHERE email=?`;
     const { email, psdNew } = req.body;
     var hash = await bcrypt.hash(psdNew, 10);
     const [querydone] = await db.query(updatepsd, [hash, email]);

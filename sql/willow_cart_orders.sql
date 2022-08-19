@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2022-08-19 06:50:28
+-- 產生時間： 2022-08-19 10:47:27
 -- 伺服器版本： 10.4.24-MariaDB
 -- PHP 版本： 7.4.29
 
@@ -137,7 +137,8 @@ INSERT INTO `willow_cart_orders` (`sid`, `member_sid`, `created_at`, `total_quan
 (87, 25, '2022-08-22', 10, 500, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
 (88, 21, '2022-08-24', 8, 400, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
 (89, 23, '2022-08-24', 12, 480, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(90, 15, '2022-08-24', 20, 900, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0);
+(90, 15, '2022-08-24', 20, 900, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
+(91, 3, '2022-08-24', 20, 900, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0);
 
 --
 -- 已傾印資料表的索引
@@ -157,7 +158,7 @@ ALTER TABLE `willow_cart_orders`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `willow_cart_orders`
 --
 ALTER TABLE `willow_cart_orders`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

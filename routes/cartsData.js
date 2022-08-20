@@ -30,7 +30,6 @@ router.post("/cartsData", async (req, res) => {
       "INSERT INTO `cart_orders`(`member_sid`, `created_at`, `total_quantity`, `pay_price`, `ship_name`, `ship_phone`, `ship_email`, `ship_address`) VALUES (?,NOW(),?,?,?,?,?,?)";
     const [result] = await db.query(sql, [
       memSid,
-      created_at,
       count,
       product_price,
       shipName,

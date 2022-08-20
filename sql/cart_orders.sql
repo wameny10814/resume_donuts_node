@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- 主機： 127.0.0.1
--- 產生時間： 2022-08-18 09:06:17
--- 伺服器版本： 10.4.24-MariaDB
+-- 主機： localhost
+-- 產生時間： 2022 年 08 月 20 日 17:23
+-- 伺服器版本： 10.4.21-MariaDB
 -- PHP 版本： 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫: `group-e`
+-- 資料庫： `Group-E`
 --
 
 -- --------------------------------------------------------
@@ -31,15 +31,15 @@ CREATE TABLE `cart_orders` (
   `sid` int(11) NOT NULL,
   `member_sid` int(11) NOT NULL,
   `created_at` date NOT NULL,
-  `total_quantity` int(11) NOT NULL,
-  `pay_price` int(11) NOT NULL,
-  `pay_type` varchar(50) NOT NULL,
+  `total_quantity` int(11) DEFAULT NULL,
+  `pay_price` int(11) DEFAULT NULL,
+  `pay_type` varchar(50) DEFAULT NULL,
   `store_name` varchar(50) DEFAULT NULL,
   `market_name` varchar(50) DEFAULT NULL,
-  `ship_name` varchar(50) NOT NULL,
-  `ship_phone` int(11) NOT NULL,
-  `ship_email` varchar(50) NOT NULL,
-  `ship_address` varchar(50) NOT NULL,
+  `ship_name` varchar(50) DEFAULT NULL,
+  `ship_phone` int(11) DEFAULT NULL,
+  `ship_email` varchar(50) DEFAULT NULL,
+  `ship_address` varchar(50) DEFAULT NULL,
   `discount_code` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -116,28 +116,13 @@ INSERT INTO `cart_orders` (`sid`, `member_sid`, `created_at`, `total_quantity`, 
 (66, 14, '2022-07-17', 20, 700, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
 (67, 17, '2022-07-18', 25, 1000, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
 (68, 30, '2022-07-19', 10, 450, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(69, 2, '2022-07-20', 8, 280, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(70, 2, '2022-07-20', 20, 850, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(71, 5, '2022-07-22', 20, 800, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(72, 16, '2022-07-23', 20, 850, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(73, 19, '2022-07-23', 20, 1000, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(74, 21, '2022-07-25', 20, 1000, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(75, 21, '2022-07-27', 10, 400, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(76, 10, '2022-07-29', 10, 300, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(77, 11, '2022-08-04', 20, 950, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(78, 16, '2022-08-11', 15, 450, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(79, 16, '2022-08-12', 15, 450, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(80, 22, '2022-08-13', 30, 1200, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(81, 29, '2022-08-14', 10, 500, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(82, 31, '2022-08-15', 20, 900, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(83, 30, '2022-08-17', 45, 1900, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(84, 30, '2022-08-18', 10, 300, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(85, 30, '2022-08-20', 10, 450, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(86, 30, '2022-08-21', 25, 800, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(87, 25, '2022-08-22', 10, 500, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(88, 21, '2022-08-24', 8, 400, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(89, 23, '2022-08-24', 12, 480, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0),
-(90, 15, '2022-08-24', 20, 900, '到店取貨', '大安店', NULL, '[value-8]', 0, '977037182', 'loveyu@aa.bb.cc', 0);
+(69, 53, '2022-08-20', NULL, NULL, NULL, NULL, NULL, '111', 111, '111@ss.ss', '復興南路99號2樓', NULL),
+(70, 53, '2022-08-20', NULL, NULL, NULL, NULL, NULL, '111', 111, '111@ss.ss', '復興南路99號2樓', NULL),
+(71, 53, '2022-08-20', 2, 90, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(72, 53, '2022-08-20', 2, 90, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(73, 53, '2022-08-20', 2, 90, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(74, 53, '2022-08-20', 2, 90, NULL, NULL, NULL, '111', 111, '111@ss.ss', '復興南路99號2樓', NULL),
+(75, 53, '2022-08-20', 2, 85, NULL, NULL, NULL, '111', 111, '111@ss.ss', '復興南路99號2樓', NULL);
 
 --
 -- 已傾印資料表的索引
@@ -157,7 +142,7 @@ ALTER TABLE `cart_orders`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `cart_orders`
 --
 ALTER TABLE `cart_orders`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

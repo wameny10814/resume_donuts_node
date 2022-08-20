@@ -267,7 +267,7 @@ router.post("/checkvalidtochangepsd", async (req, res) => {
 
 //拿取歷史訂單
 router.get("/memberhistory", async (req, res) => {
-    const loaddataa = `SELECT sid,  created_at,  pay_price, pay_type FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
+    const loaddataa = `SELECT sid,  created_at,  pay_price, total_quantity FROM cart_orders WHERE member_sid=${res.locals.payload.sid}`;
 
     // console.log('sid',res.locals.payload.sid);
     const [r2] = await db.query(loaddataa);

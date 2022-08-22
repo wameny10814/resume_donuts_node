@@ -195,15 +195,15 @@ router.post("/checkmail", async (req, res) => {
             host: "smtp.gmail.com",
             port: 465,
             auth: {
-                user: "sunnymail0705@gmail.com",
-                pass: 'uyigjlahpxbynays ',
+                user: "",
+                pass: '',
 
             },
         });
         //信件內容!!!!
         var options = {
             //寄件者
-            from: "sunnymail0705@gmail.com",
+            from: "",
             //收件者
             to: r2[0].email,
             //副本

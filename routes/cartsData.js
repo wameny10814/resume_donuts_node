@@ -5,6 +5,17 @@ const db = require(__dirname + "/../modules/mysql-connect");
 
 const router = express.Router(); // 建立 router 物件
 
+
+
+//讀會員資料
+router.get("/member", async (req, res) => {
+  let newdata = [];
+  const { sid } = req.query;
+  const sql = `SELECT * FROM member WHERE sid = ${sid}`;
+  const [result] = await db.query(sql);
+  res.json(result);
+});
+
 // loveyu 購物車寫入資料庫 ----------------------------
 
 router.post("/cartsData", async (req, res) => {

@@ -43,6 +43,9 @@ router.post("/add", async (req, res) => {
 });
 //撈取現在資料庫資料
 router.get("/memberdata", async (req, res) => {
+    if(! res.locals.payload){
+        return res.redirect('/');
+    }
     //撈會員資料表資料
     const loaddata = `SELECT sid, account, pass_hash, birthday, email, mobile, address, avatar, level, creat_at FROM member WHERE sid=${res.locals.payload.sid}`;
     //撈訂單筆數
@@ -85,6 +88,9 @@ router.get("/memberdata", async (req, res) => {
 });
 //修改會員資料
 router.post("/memberupdate", async (req, res) => {
+    if(! res.locals.payload){
+        return res.redirect('/');
+    }
     //先確認現在會員等級
     const sqllevelcheck = `SELECT  level FROM member WHERE sid=${res.locals.payload.sid}`;
     const [resultcheck] = await db.query(sqllevelcheck);
@@ -123,6 +129,9 @@ router.post("/memberupdate", async (req, res) => {
 });
 //上傳頭貼
 router.post("/yuupload", yuupload.single("avatar"), async (req, res) => {
+    if(! res.locals.payload){
+        return res.redirect('/');
+    }
     //先確認現在會員等級
     const sqllevelcheck = `SELECT  level FROM member WHERE sid=${res.locals.payload.sid}`;
     const [resultcheck] = await db.query(sqllevelcheck);
@@ -145,6 +154,9 @@ router.post("/yuupload", yuupload.single("avatar"), async (req, res) => {
 });
 //修改密碼
 router.post("/membersdupdate", async (req, res) => {
+    if(! res.locals.payload){
+        return res.redirect('/');
+    }
     const output = {
         success: false,
     };
@@ -181,14 +193,13 @@ router.post("/checkmail", async (req, res) => {
     // console.log("r2", r2[0].email);
     const { email } = req.body;
     if (!r2.length) {
-        // console.log("2");
         // console.log("output", output);
         output.success = false;
         res.json(r2);
     } else {
-        // console.log("1");
         //資料庫寫入驗證碼
-        const insertnumber = `UPDATE member SET valid=7542 WHERE member.email="${r2[0].email}"`;
+        const validnum = Math.floor(Math.random()*5000)
+        const insertnumber = `UPDATE member SET valid=${validnum} WHERE member.email="${r2[0].email}"`;
         const [r3] = await db.query(insertnumber, [req.body.email]);
 
         const transporter = nodemailer.createTransport({
@@ -197,7 +208,6 @@ router.post("/checkmail", async (req, res) => {
             auth: {
                 user: "",
                 pass: '',
-
             },
         });
         //信件內容!!!!
@@ -215,7 +225,7 @@ router.post("/checkmail", async (req, res) => {
             //純文字
             text: " ", // plaintext body
             //嵌入 html 的內文
-            html: "<h3>Pochi屋-忘記密碼驗證信</h3> <p>請輸入此段驗證碼:7542</p>",
+            html: "<h3>Pochi屋-忘記密碼驗證信</h3> <p>請輸入此段驗證碼</p>"+validnum,
             //附件檔案
         };
 
@@ -256,7 +266,7 @@ router.post("/checkvalidtochangepsd", async (req, res) => {
     const output = {
         success: false,
     };
-    console.log('body',req.body);
+    // console.log('body',req.body);
     const updatepsd = `UPDATE member SET pass_hash=? WHERE email=?`;
     const { email, psdNew } = req.body;
     var hash = await bcrypt.hash(psdNew, 10);
@@ -272,7 +282,19 @@ router.get("/memberhistory", async (req, res) => {
     // console.log('sid',res.locals.payload.sid);
     const [r2] = await db.query(loaddataa);
 
-    console.log('r2', r2);
+    console.log('rmemberhistory', r2);
+    res.json(r2);
+});
+//拿取用戶點取之訂單詳細資料
+router.get("/memberhistorylist", async (req, res) => {
+    const loaddataa = `SELECT cart_orders.sid,member_sid,cart_orderdetail.* FROM cart_orders JOIN cart_orderdetail ON cart_orders.sid = cart_orderdetail.orders_id AND cart_orders.sid =? WHERE cart_orders.member_sid=${res.locals.payload.sid}`;
+    console.log('sid',res.locals.payload.sid);
+    const { getuseposid } = req.headers;
+
+    console.log('sid', req.headers.getuseposid);
+    const [r2] = await db.query(loaddataa,[getuseposid]);
+
+    console.log('r22', r2);
     res.json(r2);
 });
 

@@ -75,7 +75,7 @@ app.use((req, res, next) => {
     //2022-07-20 15 36 28 如果路由需要確認有沒有登入才做的話
     //jwt 每次request 都需要給token
     res.locals.payload = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("payload", res.locals.payload);
+    // console.log("payload", res.locals.payload);
   }
 
   // willow admin login
